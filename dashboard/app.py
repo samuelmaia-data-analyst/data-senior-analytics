@@ -270,7 +270,7 @@ def interpret_correlation(corr):
         return "Muito Fraca", "❌"
 
 
-# Página Home
+# Página Home - Versão com ícones personalizados
 if page == "🏠 Home":
     st.header("🏠 Página Inicial - Dashboard Analítico")
 
@@ -279,22 +279,22 @@ if page == "🏠 Home":
 
     with col1:
         st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-        st.metric("Python", "3.14.2", "Latest")
+        st.metric("🐍 Python", "3.14.2", "Latest")
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col2:
         st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-        st.metric("Pandas", "2.2.3", "Stable")
+        st.metric("🐼 Pandas", "2.2.3", "Stable")
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col3:
         st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-        st.metric("Streamlit", "1.41.1", "Latest")
+        st.metric("🎈 Streamlit", "1.41.1", "Latest")
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col4:
         st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-        st.metric("Plotly", "6.0.0", "Latest")
+        st.metric("📊 Plotly", "6.0.0", "Latest")
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("---")
