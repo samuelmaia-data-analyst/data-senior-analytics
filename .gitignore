@@ -45,4 +45,3 @@ outputs/models/*
 # AWS
 .aws/
 credentials
-config
