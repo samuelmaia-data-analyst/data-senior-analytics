@@ -305,7 +305,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
         <h2>Samuel Maia</h2>
         <h3>🚀 Analista de Dados Sênior</h3>
         <p>
-          <a href="https://github.com/samuelmaiapro">
+          <a href="https://github.com/samuelmaiapro/data-senior-analytics">
             <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
           </a>
           <a href="https://linkedin.com/in/samuelmaiapro">
