@@ -1,0 +1,22 @@
+# config/config.yaml
+project:
+  name: "Data Senior Analytics"
+  version: "1.0.0"
+  author: "Samuel Maia"
+
+data:
+  raw_path: "data/raw/"
+  processed_path: "data/processed/"
+  external_path: "data/external/"
+
+database:
+  sqlite_path: "data/analytics.db"
+
+streamlit:
+  port: 8501
+  theme: "dark"
+
+aws:
+  free_tier_limits:
+    s3_gb: 5
+    lambda_requests: 1000000
