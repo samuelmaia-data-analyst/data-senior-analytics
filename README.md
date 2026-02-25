@@ -20,9 +20,9 @@
 <br>
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x400/FF4B4B/FFFFFF?text=Data+Senior+Analytics+-+Dashboard+Preview" width="80%" alt="Dashboard Preview">
+  <img src="assets/images/dashboard-preview.png" width="80%" alt="Dashboard Preview">
   <br>
-  <sub><strong>📸 Preview do Dashboard (em breve com screenshot real)</strong></sub>
+  <sub><strong>📸 Preview do Dashboard</strong></sub>
 </div>
 
 ---
