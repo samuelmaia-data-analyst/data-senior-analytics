@@ -125,7 +125,7 @@ Este projeto foi criado para **demonstrar na prática** as habilidades de um Ana
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/samuelmaiapro/data-senior-analytics.git
+git clone https://github.com/samuelmaia-data-analyst/data-senior-analytics.git
 cd data-senior-analytics
 
 # 2. Crie e ative o ambiente virtual
@@ -163,7 +163,7 @@ O projeto está disponível online gratuitamente:
 1. Código enviado para o GitHub
 2. Conectado ao [Streamlit Cloud](https://share.streamlit.io)
 3. Configurado:
-   - **Repository:** `samuelmaiapro/data-senior-analytics`
+   - **Repository:** `samuelmaia-data-analyst/data-senior-analytics`
    - **Branch:** `main`
    - **Main file:** `dashboard/app.py`
 4. Deploy automático a cada push no GitHub
@@ -239,9 +239,9 @@ Confira meus projetos específicos onde aplico técnicas avançadas:
 
 | Projeto | Descrição | Tecnologias | Link |
 |---------|-----------|-------------|------|
-| **Case Study: Amazon Sales** | Análise de vendas da Amazon com dashboards interativos | Python, Streamlit, Pandas, Plotly | [Acessar](https://github.com/samuelmaiapro/case-study-amazon-sales) |
-| **Case Study: Sales EDA** | Análise exploratória profunda de dados de vendas | Python, Pandas, Matplotlib, Seaborn | [Acessar](https://github.com/samuelmaiapro/case-study-sales-eda) |
-| **Case Study: Churn Prediction** | Sistema completo de ML para previsão de cancelamento | Python, Scikit-learn, FastAPI, Streamlit | [Acessar](https://github.com/samuelmaiapro/case-study-churn-prediction) |
+| **Case Study: Amazon Sales** | Análise de vendas da Amazon com dashboards interativos | Python, Streamlit, Pandas, Plotly | [Acessar](https://github.com/samuelmaia-data-analyst/case-study-amazon-sales) |
+| **Case Study: Sales EDA** | Análise exploratória profunda de dados de vendas | Python, Pandas, Matplotlib, Seaborn | [Acessar](https://github.com/samuelmaia-data-analyst/case-study-sales-eda) |
+| **Case Study: Churn Prediction** | Sistema completo de ML para previsão de cancelamento | Python, Scikit-learn, FastAPI, Streamlit | [Acessar](https://github.com/samuelmaia-data-analyst/case-study-churn-prediction) |
 
 Cada projeto demonstra habilidades específicas e complementares ao meu trabalho principal.
 
@@ -300,15 +300,15 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
   <table>
     <tr>
       <td align="center">
-        <img src="https://github.com/samuelmaiapro.png" width="150" height="150" style="border-radius: 50%; border: 4px solid #FF4B4B;" alt="Samuel Maia"/>
+        <img src="https://github.com/samuelmaia-data-analyst.png" width="150" height="150" style="border-radius: 50%; border: 4px solid #FF4B4B;" alt="Samuel Maia"/>
         <br>
         <h2>Samuel Maia</h2>
         <h3>🚀 Analista de Dados Sênior</h3>
         <p>
-          <a href="https://github.com/samuelmaiapro/data-senior-analytics">
+          <a href="https://github.com/samuelmaia-data-analyst/data-senior-analytics">
             <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
           </a>
-          <a href="https://linkedin.com/in/samuelmaiapro">
+          <a href="https://linkedin.com/in/samuelmaia-data-analyst">
             <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">
           </a>
           <a href="mailto:smaia2@gmail.com">
@@ -329,10 +329,10 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 <div align="center">
 
-![GitHub stars](https://img.shields.io/github/stars/samuelmaiapro/data-senior-analytics?style=social)
-![GitHub forks](https://img.shields.io/github/forks/samuelmaiapro/data-senior-analytics?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/samuelmaiapro/data-senior-analytics?style=social)
-![GitHub last commit](https://img.shields.io/github/last-commit/samuelmaiapro/data-senior-analytics)
+![GitHub stars](https://img.shields.io/github/stars/samuelmaia-data-analyst/data-senior-analytics?style=social)
+![GitHub forks](https://img.shields.io/github/forks/samuelmaia-data-analyst/data-senior-analytics?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/samuelmaia-data-analyst/data-senior-analytics?style=social)
+![GitHub last commit](https://img.shields.io/github/last-commit/samuelmaia-data-analyst/data-senior-analytics)
 
 </div>
 
