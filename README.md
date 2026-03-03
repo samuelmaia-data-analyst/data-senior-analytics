@@ -1,8 +1,8 @@
-﻿# Data Senior Analytics
+# Data Senior Analytics
 
 [English version](README.en.md)
 
-![Python](https://img.shields.io/badge/Python-3.14.2-3776AB?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.41.1-FF4B4B?logo=streamlit&logoColor=white)
 ![Pandas](https://img.shields.io/badge/Pandas-2.2.3-150458?logo=pandas&logoColor=white)
 ![NumPy](https://img.shields.io/badge/NumPy-2.4.2-013243?logo=numpy&logoColor=white)
@@ -70,10 +70,10 @@ A solução propõe uma camada analítica reutilizável em que stakeholders faze
 ## Visão de Arquitetura
 ```mermaid
 flowchart TD
-    A[Upload do Usuário CSV/XLSX] --> B[File Extractor src/data/file_extractor.py]
+    A[Upload do usuário CSV/XLSX] --> B[File Extractor src/data/file_extractor.py]
     B --> C[Transformer src/data/transformer.py]
     C --> D[EDA src/analysis/exploratory.py]
-    C --> E[Persistencia SQLite src/data/sqlite_manager.py]
+    C --> E[Persistência SQLite src/data/sqlite_manager.py]
     D --> F[Dashboard Streamlit dashboard/app.py]
     E --> F
     F --> G[Insights e suporte à decisão]
@@ -188,12 +188,19 @@ URL local: http://localhost:8501
 ### Guia operacional
 - [docs/STREAMLIT_CLOUD.md](docs/STREAMLIT_CLOUD.md)
 
-## Qualidade e Padrão Executivo`r`n`r`nAtalho operacional (`make`):`r`n```bash`r`nmake quality`r`n```
+## Qualidade e Padrão Executivo
+Atalho operacional (`make`):
+```bash
+make quality
+```
+
+Checks individuais:
 ```bash
 python -m ruff check src config scripts dashboard tests
 python -m pytest
 python scripts/check_encoding.py
-python scripts/streamlit_cloud_preflight.py`npython scripts/validate_data_provenance.py
+python scripts/streamlit_cloud_preflight.py
+python scripts/validate_data_provenance.py
 ```
 
 ## Contato
@@ -209,6 +216,3 @@ Email: smaia2@gmail.com
 
 ## Licença
 Este projeto está licenciado sob a licença MIT.
-
-
-

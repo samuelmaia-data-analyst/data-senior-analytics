@@ -1,8 +1,8 @@
-﻿# Data Senior Analytics
+# Data Senior Analytics
 
 [Versão em Português (PT-BR)](README.md)
 
-![Python](https://img.shields.io/badge/Python-3.14.2-3776AB?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.41.1-FF4B4B?logo=streamlit&logoColor=white)
 ![Pandas](https://img.shields.io/badge/Pandas-2.2.3-150458?logo=pandas&logoColor=white)
 ![NumPy](https://img.shields.io/badge/NumPy-2.4.2-013243?logo=numpy&logoColor=white)
@@ -26,7 +26,7 @@ Live demo: https://data-analytics-sr.streamlit.app
 - [Tech Stack](#tech-stack)
 - [Reproducibility (How to Run)](#reproducibility-how-to-run)
 - [Streamlit Cloud Deployment](#streamlit-cloud-deployment)
-- [Quality Gates](#quality-gates)
+- [Executive Quality Standards](#executive-quality-standards)
 - [Contact](#contact)
 - [License](#license)
 
@@ -188,12 +188,19 @@ Local URL: http://localhost:8501
 ### Runbook
 - [docs/STREAMLIT_CLOUD.md](docs/STREAMLIT_CLOUD.md)
 
-## Quality Gates`r`n`r`nOperational shortcut (`make`):`r`n```bash`r`nmake quality`r`n```
+## Executive Quality Standards
+Operational shortcut (`make`):
+```bash
+make quality
+```
+
+Individual checks:
 ```bash
 python -m ruff check src config scripts dashboard tests
 python -m pytest
 python scripts/check_encoding.py
-python scripts/streamlit_cloud_preflight.py`npython scripts/validate_data_provenance.py
+python scripts/streamlit_cloud_preflight.py
+python scripts/validate_data_provenance.py
 ```
 
 ## Contact
@@ -209,6 +216,3 @@ Email: smaia2@gmail.com
 
 ## License
 This project is licensed under the MIT License.
-
-
-
