@@ -1,10 +1,10 @@
-﻿"""Streamlit app rebuilt with a clean executive layout and stable data flow."""
+"""Executive Streamlit dashboard with robust runtime behavior."""
 
 from __future__ import annotations
 
 import os
-import sys
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -21,13 +21,13 @@ from config.settings import Settings  # noqa: E402
 from src.data.sqlite_manager import SQLiteManager  # noqa: E402
 
 PAGE_OPTIONS = [
-    "Home",
+    "Resumo",
     "Upload",
-    "Data Preview",
-    "Exploratory Analysis",
-    "Visualizations",
-    "Database",
-    "Settings",
+    "Dados",
+    "EDA",
+    "Visualizacoes",
+    "Banco",
+    "Configuracoes",
 ]
 
 st.set_page_config(
@@ -36,6 +36,53 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+
+def apply_executive_style() -> None:
+    st.markdown(
+        """
+        <style>
+            .stApp {
+                background: linear-gradient(180deg, #f5f7fa 0%, #eef2f7 100%);
+            }
+            .main .block-container {
+                max-width: 1240px;
+                padding-top: 1.2rem;
+                padding-bottom: 2rem;
+            }
+            .hero {
+                padding: 1rem 1.2rem;
+                border: 1px solid #d8dee8;
+                border-radius: 12px;
+                background: #ffffff;
+                box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+                margin-bottom: 0.8rem;
+            }
+            .hero-title {
+                margin: 0;
+                color: #0f172a;
+                font-size: 2rem;
+                font-weight: 750;
+                letter-spacing: -0.02em;
+            }
+            .hero-subtitle {
+                margin: 0.35rem 0 0 0;
+                color: #475569;
+                font-size: 0.95rem;
+            }
+            .section-card {
+                background: #ffffff;
+                border: 1px solid #d8dee8;
+                border-radius: 12px;
+                padding: 0.8rem 1rem 0.2rem 1rem;
+                box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+                min-height: 170px;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 
 @st.cache_resource
 def get_db() -> SQLiteManager:
@@ -48,29 +95,6 @@ def load_default_demo_data() -> pd.DataFrame:
     if demo_path.exists():
         return pd.read_csv(demo_path)
     return pd.DataFrame()
-
-
-def ensure_session_defaults() -> None:
-    if "data" not in st.session_state:
-        st.session_state.data = None
-    if "data_name" not in st.session_state:
-        st.session_state.data_name = None
-    if "data_source" not in st.session_state:
-        st.session_state.data_source = None
-    if "selected_page" not in st.session_state:
-        st.session_state.selected_page = "Home"
-
-    if st.session_state.data is None:
-        demo_df = load_default_demo_data()
-        if not demo_df.empty:
-            st.session_state.data = demo_df
-            st.session_state.data_name = "default_demo.csv"
-            st.session_state.data_source = "sample_auto"
-
-
-def render_header() -> None:
-    st.title("Data Senior Analytics")
-    st.caption("Senior-level analytics dashboard for business decision support")
 
 
 @st.cache_data
@@ -91,40 +115,88 @@ def get_build_id() -> str:
     return "unknown"
 
 
-def render_home(df: pd.DataFrame | None, db: SQLiteManager) -> None:
-    st.subheader("Executive Summary")
+def ensure_session_defaults() -> None:
+    if "data" not in st.session_state:
+        st.session_state.data = None
+    if "data_name" not in st.session_state:
+        st.session_state.data_name = None
+    if "data_source" not in st.session_state:
+        st.session_state.data_source = None
+    if "selected_page" not in st.session_state:
+        st.session_state.selected_page = "Resumo"
 
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Python", "3.11+")
-    with col2:
+    if st.session_state.data is None:
+        demo_df = load_default_demo_data()
+        if not demo_df.empty:
+            st.session_state.data = demo_df
+            st.session_state.data_name = "default_demo.csv"
+            st.session_state.data_source = "sample_auto"
+
+
+def render_header(df: pd.DataFrame | None) -> None:
+    st.markdown(
+        """
+        <div class="hero">
+            <h1 class="hero-title">Data Senior Analytics</h1>
+            <p class="hero-subtitle">Painel executivo para diagnostico, exploracao e suporte a decisao.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    c1, c2, c3 = st.columns([1, 1, 2])
+    with c1:
+        st.metric("Ambiente", "Executivo")
+    with c2:
+        st.metric("Build", get_build_id())
+    with c3:
+        if df is not None and not df.empty:
+            st.metric("Dataset ativo", st.session_state.data_name)
+        else:
+            st.metric("Dataset ativo", "Sem dados")
+
+
+def render_home(df: pd.DataFrame | None, db: SQLiteManager) -> None:
+    st.subheader("Resumo Executivo")
+
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        st.metric("Python", "3.11")
+    with c2:
         st.metric("Framework", "Streamlit")
-    with col3:
-        st.metric("Source", "Kaggle")
-    with col4:
-        st.metric("Tables", len(db.list_tables()))
+    with c3:
+        st.metric("Fonte", "Kaggle")
+    with c4:
+        st.metric("Tabelas SQLite", len(db.list_tables()))
 
     left, right = st.columns(2)
     with left:
-        st.markdown("### Business Goal")
-        st.write("Transform raw datasets into validated analytical insights for faster decisions.")
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
+        st.markdown("### Objetivo")
+        st.write("Transformar dados tabulares em insights acionaveis para decisao rapida e segura.")
+        st.markdown("### Valor")
+        st.write("Fluxo analitico ponta a ponta com padrao senior e foco em negocio.")
+        st.markdown("</div>", unsafe_allow_html=True)
 
     with right:
-        st.markdown("### Current Data Status")
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
+        st.markdown("### Status dos Dados")
         if df is not None and not df.empty:
             st.write(f"Dataset: **{st.session_state.data_name}**")
-            st.write(f"Rows: **{df.shape[0]:,}**")
-            st.write(f"Columns: **{df.shape[1]}**")
+            st.write(f"Linhas: **{df.shape[0]:,}**")
+            st.write(f"Colunas: **{df.shape[1]}**")
+            st.write(f"Fonte: **{st.session_state.data_source}**")
         else:
-            st.write("No dataset loaded yet.")
+            st.info("Nenhum dataset carregado no momento.")
+        st.markdown("</div>", unsafe_allow_html=True)
 
 
 def render_upload(db: SQLiteManager) -> None:
-    st.subheader("Data Upload")
-    uploaded = st.file_uploader("Upload CSV or Excel", type=["csv", "xlsx", "xls"])
+    st.subheader("Upload de Dados")
+    uploaded = st.file_uploader("Envie CSV ou Excel", type=["csv", "xlsx", "xls"])
 
     if uploaded is None:
-        st.info("Upload a file to replace the default demo dataset.")
+        st.info("Envie um arquivo para substituir o dataset de demonstracao.")
         return
 
     if uploaded.name.endswith(".csv"):
@@ -136,118 +208,137 @@ def render_upload(db: SQLiteManager) -> None:
     st.session_state.data_name = uploaded.name
     st.session_state.data_source = "upload"
 
-    st.success(f"Loaded: {uploaded.name}")
-    st.caption("Preview (first 50 rows)")
+    k1, k2, k3 = st.columns(3)
+    with k1:
+        st.metric("Linhas", f"{df.shape[0]:,}")
+    with k2:
+        st.metric("Colunas", df.shape[1])
+    with k3:
+        st.metric("Memoria", f"{df.memory_usage(deep=True).sum() / (1024 * 1024):.2f} MB")
+
+    st.success(f"Arquivo carregado com sucesso: {uploaded.name}")
+    st.caption("Previa (primeiras 50 linhas)")
     st.table(df.head(50))
 
     table_name = st.text_input(
-        "SQLite table name",
+        "Nome da tabela SQLite",
         value=uploaded.name.replace(".", "_"),
         key="upload_table_name",
     )
-    if st.button("Save to SQLite", key="save_sqlite_button"):
+    if st.button("Salvar no SQLite", key="save_sqlite_button", use_container_width=True):
         ok = db.df_to_sql(df, table_name)
         if ok:
-            st.success(f"Saved to table: {table_name}")
+            st.success(f"Tabela salva: {table_name}")
         else:
-            st.error("Failed to save data to SQLite.")
+            st.error("Falha ao salvar no SQLite.")
 
 
 def render_data_preview(df: pd.DataFrame | None) -> None:
-    st.subheader("Data Preview")
+    st.subheader("Visualizacao dos Dados")
     if df is None or df.empty:
-        st.warning("No data available.")
+        st.warning("Nenhum dado disponivel.")
         return
 
-    st.caption("Preview (first 200 rows)")
-    st.table(df.head(200))
+    tab1, tab2 = st.tabs(["Amostra", "Perfil de Colunas"])
 
-    info = pd.DataFrame(
-        {
-            "column": df.columns,
-            "dtype": df.dtypes.astype(str).values,
-            "missing": df.isna().sum().values,
-            "unique": [df[c].nunique(dropna=True) for c in df.columns],
-        }
-    )
-    st.markdown("### Column Profile")
-    st.table(info)
+    with tab1:
+        st.caption("Previa (primeiras 200 linhas)")
+        st.table(df.head(200))
+
+    with tab2:
+        info = pd.DataFrame(
+            {
+                "Coluna": df.columns,
+                "Tipo": df.dtypes.astype(str).values,
+                "Nulos": df.isna().sum().values,
+                "Unicos": [df[c].nunique(dropna=True) for c in df.columns],
+            }
+        )
+        st.table(info)
 
 
 def render_eda(df: pd.DataFrame | None) -> None:
-    st.subheader("Exploratory Analysis")
+    st.subheader("Analise Exploratoria")
     if df is None or df.empty:
-        st.warning("No data available.")
+        st.warning("Nenhum dado disponivel.")
         return
 
     numeric = df.select_dtypes(include="number")
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Rows", f"{len(df):,}")
-    with col2:
-        st.metric("Missing values", int(df.isna().sum().sum()))
-    with col3:
-        st.metric("Duplicate rows", int(df.duplicated().sum()))
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.metric("Linhas", f"{len(df):,}")
+    with c2:
+        st.metric("Valores nulos", int(df.isna().sum().sum()))
+    with c3:
+        st.metric("Linhas duplicadas", int(df.duplicated().sum()))
 
     if numeric.empty:
-        st.info("No numeric columns detected for descriptive stats.")
+        st.info("Nao ha colunas numericas para estatistica descritiva.")
         return
 
-    st.markdown("### Descriptive Statistics")
-    st.table(numeric.describe().T)
+    tab_stats, tab_corr = st.tabs(["Estatistica", "Correlacao"])
 
-    if numeric.shape[1] > 1:
-        corr = numeric.corr(numeric_only=True)
-        fig = px.imshow(corr, text_auto=True, aspect="auto", title="Correlation Matrix")
-        st.plotly_chart(fig, use_container_width=True)
+    with tab_stats:
+        st.table(numeric.describe().T)
+
+    with tab_corr:
+        if numeric.shape[1] > 1:
+            corr = numeric.corr(numeric_only=True)
+            fig = px.imshow(corr, text_auto=True, aspect="auto", title="Matriz de Correlacao")
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("Sao necessarias ao menos 2 colunas numericas.")
 
 
 def render_charts(df: pd.DataFrame | None) -> None:
-    st.subheader("Visualizations")
+    st.subheader("Visualizacoes")
     if df is None or df.empty:
-        st.warning("No data available.")
+        st.warning("Nenhum dado disponivel.")
         return
 
     numeric_cols = df.select_dtypes(include="number").columns.tolist()
     cat_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
 
     if numeric_cols:
-        col = st.selectbox("Numeric variable", numeric_cols, key="chart_numeric_variable")
-        fig = px.histogram(df, x=col, nbins=30, title=f"Distribution: {col}")
+        col = st.selectbox("Variavel numerica", numeric_cols, key="chart_numeric_variable")
+        fig = px.histogram(df, x=col, nbins=30, title=f"Distribuicao: {col}")
         st.plotly_chart(fig, use_container_width=True)
 
     if cat_cols and numeric_cols:
-        cat = st.selectbox("Category", cat_cols, key="chart_category")
-        val = st.selectbox(
-            "Metric",
-            numeric_cols,
-            index=min(1, len(numeric_cols) - 1),
-            key="chart_metric",
-        )
+        left, right = st.columns(2)
+        with left:
+            cat = st.selectbox("Categoria", cat_cols, key="chart_category")
+        with right:
+            val = st.selectbox(
+                "Metrica",
+                numeric_cols,
+                index=min(1, len(numeric_cols) - 1),
+                key="chart_metric",
+            )
         grouped = df.groupby(cat, dropna=False)[val].mean().reset_index().sort_values(val, ascending=False)
-        fig = px.bar(grouped.head(15), x=cat, y=val, title=f"Average {val} by {cat}")
+        fig = px.bar(grouped.head(15), x=cat, y=val, title=f"Media de {val} por {cat}")
         st.plotly_chart(fig, use_container_width=True)
 
 
 def render_database(db: SQLiteManager) -> None:
-    st.subheader("SQLite Database")
+    st.subheader("Banco SQLite")
     tables = db.list_tables()
     if not tables:
-        st.info("No tables found in SQLite yet.")
+        st.info("Nenhuma tabela encontrada no SQLite.")
         return
 
-    table = st.selectbox("Table", tables, key="database_table")
+    table = st.selectbox("Tabela", tables, key="database_table")
     count = db.fetch_scalar(f"SELECT COUNT(*) FROM [{table}]") or 0
-    st.metric("Rows in table", int(count))
+    st.metric("Linhas na tabela", int(count))
 
     preview = db.sql_to_df(f"SELECT * FROM [{table}] LIMIT 500")
-    st.caption("Table preview (up to 500 rows)")
+    st.caption("Previa da tabela (ate 500 linhas)")
     st.table(preview)
 
 
 def render_settings(df: pd.DataFrame | None) -> None:
-    st.subheader("Settings and Runtime")
+    st.subheader("Configuracoes e Runtime")
     st.json(
         {
             "timestamp": datetime.now().isoformat(timespec="seconds"),
@@ -262,12 +353,13 @@ def render_settings(df: pd.DataFrame | None) -> None:
 
 def main() -> None:
     ensure_session_defaults()
+    apply_executive_style()
     db = get_db()
     df = st.session_state.data
 
-    render_header()
+    render_header(df)
     page = st.radio(
-        "Navigation",
+        "Navegacao",
         PAGE_OPTIONS,
         horizontal=True,
         key="selected_page",
@@ -275,35 +367,36 @@ def main() -> None:
     )
 
     with st.sidebar:
-        st.markdown("## Active Context")
-        st.caption(f"Build: {get_build_id()}")
-        st.caption(f"Page: {page}")
+        st.markdown("## Contexto")
+        st.caption(f"Build: `{get_build_id()}`")
+        st.caption(f"Pagina: **{page}**")
         if df is not None and not df.empty:
-            st.caption(f"Dataset: {st.session_state.data_name}")
-            st.caption(f"Rows: {df.shape[0]:,}")
-            st.caption(f"Cols: {df.shape[1]}")
+            st.caption(f"Dataset: **{st.session_state.data_name}**")
+            st.caption(f"Linhas: {df.shape[0]:,}")
+            st.caption(f"Colunas: {df.shape[1]}")
             if st.session_state.data_source == "sample_auto":
-                st.info("Default demo dataset loaded.")
-        if st.button("Reset session", use_container_width=True):
+                st.info("Dataset padrao carregado automaticamente.")
+
+        if st.button("Resetar sessao", use_container_width=True):
             for key in ("data", "data_name", "data_source"):
                 if key in st.session_state:
                     del st.session_state[key]
             st.rerun()
 
     page_handlers = {
-        "Home": lambda: render_home(df, db),
+        "Resumo": lambda: render_home(df, db),
         "Upload": lambda: render_upload(db),
-        "Data Preview": lambda: render_data_preview(df),
-        "Exploratory Analysis": lambda: render_eda(df),
-        "Visualizations": lambda: render_charts(df),
-        "Database": lambda: render_database(db),
-        "Settings": lambda: render_settings(df),
+        "Dados": lambda: render_data_preview(df),
+        "EDA": lambda: render_eda(df),
+        "Visualizacoes": lambda: render_charts(df),
+        "Banco": lambda: render_database(db),
+        "Configuracoes": lambda: render_settings(df),
     }
 
     try:
         page_handlers[page]()
     except Exception as exc:  # noqa: BLE001
-        st.error("This page failed to render. The app remains available.")
+        st.error("Falha ao renderizar esta pagina. O app continua disponivel.")
         st.exception(exc)
 
 
