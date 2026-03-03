@@ -113,8 +113,15 @@ flowchart LR
 ## Project Structure
 ```text
 .
+|-- .streamlit/
+|   |-- config.toml
+|   `-- secrets.example.toml
 |-- dashboard/
-|   `-- app.py
+|   |-- app.py
+|   |-- __init__.py
+|   `-- utils/
+|       |-- analytics.py
+|       `-- __init__.py
 |-- src/
 |   |-- analysis/
 |   |   `-- exploratory.py
@@ -122,6 +129,8 @@ flowchart LR
 |       |-- file_extractor.py
 |       |-- transformer.py
 |       `-- sqlite_manager.py
+|-- src/utils/
+|   `-- observability.py
 |-- config/
 |   |-- config.yaml
 |   |-- data_source.yaml
@@ -129,14 +138,26 @@ flowchart LR
 |-- scripts/
 |   |-- automation.py
 |   |-- check_encoding.py
-|   `-- generate_sample_data.py
+|   |-- generate_sample_data.py
+|   |-- set_kaggle_provenance.py
+|   |-- streamlit_cloud_preflight.py
+|   `-- validate_data_provenance.py
 |-- docs/
-|   `-- DATA_PROVENANCE.md
+|   |-- ARCHITECTURE.md
+|   |-- DATA_PROVENANCE.md
+|   |-- STREAMLIT_CLOUD.md
+|   `-- DECISIONS/
+|       |-- ADR-0001-streamlit-presentation-layer.md
+|       |-- ADR-0002-sqlite-persistence.md
+|       `-- ADR-0003-kaggle-provenance-gate.md
 |-- data/
+|   `-- sample/default_demo.csv
 |-- tests/
 |-- requirements.txt
 |-- requirements-dev.txt
 |-- runtime.txt
+|-- pyproject.toml
+|-- Makefile
 |-- README.md
 `-- README.en.md
 ```
