@@ -7,17 +7,22 @@ import pandas as pd
 def detect_column_types(df: pd.DataFrame) -> dict[str, list[str]]:
     """Detecta e categoriza colunas por tipo."""
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
-    categorical_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
+    raw_categorical_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
     date_cols = df.select_dtypes(include=["datetime64"]).columns.tolist()
 
-    for col in df.columns:
-        if col not in date_cols and df[col].dtype == "object":
-            try:
-                pd.to_datetime(df[col].dropna().iloc[0])
-                if col not in date_cols:
-                    date_cols.append(col)
-            except Exception:
-                pass
+    for col in raw_categorical_cols:
+        if col in date_cols:
+            continue
+        non_null = df[col].dropna()
+        if non_null.empty:
+            continue
+        sample_size = min(len(non_null), 200)
+        sample = non_null.sample(n=sample_size, random_state=42) if len(non_null) > sample_size else non_null
+        parsed = pd.to_datetime(sample, errors="coerce", infer_datetime_format=True)
+        if parsed.notna().mean() >= 0.8 and col not in date_cols:
+            date_cols.append(col)
+
+    categorical_cols = [c for c in raw_categorical_cols if c not in date_cols]
 
     id_cols = []
     for col in numeric_cols:
