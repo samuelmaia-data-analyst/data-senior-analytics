@@ -51,86 +51,181 @@ st.set_page_config(
 # CSS personalizado
 st.markdown("""
 <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+
+    :root {
+        --brand-900: #0f172a;
+        --brand-700: #1e293b;
+        --brand-500: #334155;
+        --accent-600: #d62828;
+        --accent-500: #e63946;
+        --accent-100: #fdecec;
+        --surface-100: #f8fafc;
+        --surface-200: #eef2f7;
+        --border-200: #dbe3ee;
+        --text-900: #111827;
+        --text-600: #4b5563;
+    }
+
+    .stApp {
+        font-family: "Manrope", sans-serif;
+        color: var(--text-900);
+        background:
+            radial-gradient(circle at 20% 0%, #ffffff 0%, #f7f9fc 35%, #eef2f7 100%);
+    }
+
+    .main .block-container {
+        padding-top: 1.2rem;
+        padding-bottom: 2rem;
+        max-width: 1280px;
+    }
+
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0f172a 0%, #111827 45%, #1f2937 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    [data-testid="stSidebar"] * {
+        color: #f1f5f9 !important;
+    }
+
     .main-header {
-        font-size: 2.5rem;
-        color: #FF4B4B;
-        text-align: center;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
+        font-family: "Manrope", sans-serif;
+        font-size: clamp(2.0rem, 3.4vw, 3.1rem);
+        color: var(--brand-900);
+        text-align: left;
+        margin: 0 0 0.2rem 0;
+        font-weight: 800;
+        letter-spacing: -0.03em;
     }
+
     .sub-header {
-        font-size: 1.2rem;
-        color: #555;
-        text-align: center;
-        margin-bottom: 2rem;
-        font-style: italic;
+        font-size: 1.02rem;
+        color: var(--text-600);
+        text-align: left;
+        margin-bottom: 1.2rem;
+        font-weight: 500;
     }
+
     .metric-card {
-        background: linear-gradient(135deg, #f0f2f6 0%, #e6e9f0 100%);
+        background: linear-gradient(160deg, #ffffff 0%, #f8fafc 65%, #f2f6fb 100%);
+        border: 1px solid var(--border-200);
         padding: 1rem;
-        border-radius: 15px;
+        border-radius: 16px;
         text-align: center;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        transition: transform 0.3s;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
+
     .metric-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        transform: translateY(-3px);
+        border-color: #c9d5e5;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
     }
+
     .upload-box {
-        border: 3px dashed #FF4B4B;
+        border: 2px dashed #b8c4d6;
         padding: 2rem;
-        border-radius: 15px;
+        border-radius: 16px;
         text-align: center;
-        background: linear-gradient(135deg, #fff5f5 0%, #ffe9e9 100%);
-        transition: all 0.3s;
+        background: linear-gradient(145deg, #ffffff 0%, #f6f9fc 100%);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
+
     .upload-box:hover {
-        border-color: #ff6b6b;
-        background: linear-gradient(135deg, #ffe9e9 0%, #ffdddd 100%);
+        border-color: var(--accent-500);
+        box-shadow: 0 8px 30px rgba(214, 40, 40, 0.12);
     }
-    .info-box {
-        background-color: #e3f2fd;
-        padding: 1rem;
-        border-radius: 10px;
-        border-left: 5px solid #2196f3;
-        margin: 1rem 0;
-    }
-    .warning-box {
-        background-color: #fff3e0;
-        padding: 1rem;
-        border-radius: 10px;
-        border-left: 5px solid #ff9800;
-        margin: 1rem 0;
-    }
-    .success-box {
-        background-color: #e8f5e8;
-        padding: 1rem;
-        border-radius: 10px;
-        border-left: 5px solid #4caf50;
-        margin: 1rem 0;
-    }
+
+    .info-box,
+    .warning-box,
+    .success-box,
+    .correlation-card,
     .chart-container {
-        background-color: white;
+        border-radius: 14px;
+        border: 1px solid var(--border-200);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .info-box {
+        background: #f5f9ff;
+        border-left: 5px solid #3b82f6;
         padding: 1rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         margin: 1rem 0;
     }
-    .correlation-card {
-        background-color: #f8f9fa;
+
+    .warning-box {
+        background: #fff8f1;
+        border-left: 5px solid #f59e0b;
         padding: 1rem;
-        border-radius: 10px;
-        border-left: 5px solid #FF4B4B;
+        margin: 1rem 0;
+    }
+
+    .success-box {
+        background: #f0fdf4;
+        border-left: 5px solid #22c55e;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    .chart-container {
+        background: #ffffff;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    .correlation-card {
+        background: #ffffff;
+        border-left: 5px solid var(--accent-500);
+        padding: 1rem;
         margin: 0.5rem 0;
     }
+
     .sidebar-header {
         text-align: center;
-        padding: 1.5rem;
-        background: linear-gradient(135deg, #FF4B4B 0%, #FF6B6B 100%);
-        border-radius: 15px;
-        margin-bottom: 1.5rem;
+        padding: 1.2rem;
+        background: linear-gradient(160deg, #ef4444 0%, #dc2626 60%, #b91c1c 100%);
+        border-radius: 14px;
+        margin-bottom: 1.2rem;
         color: white;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        box-shadow: 0 14px 26px rgba(0, 0, 0, 0.22);
+    }
+
+    .stDataFrame,
+    [data-testid="stMetric"] {
+        border-radius: 12px;
+    }
+
+    .stButton > button,
+    .stDownloadButton > button {
+        border-radius: 10px;
+        border: 1px solid #c7d2e3;
+        background: #ffffff;
+        font-weight: 600;
+    }
+
+    .stButton > button:hover,
+    .stDownloadButton > button:hover {
+        border-color: var(--accent-500);
+        color: var(--accent-600);
+    }
+
+    @media (max-width: 960px) {
+        .main .block-container {
+            padding-top: 0.8rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .main-header,
+        .sub-header {
+            text-align: left;
+        }
+
+        .upload-box {
+            padding: 1.2rem;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
