@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import subprocess
 from datetime import datetime
 
 import pandas as pd
@@ -62,6 +64,24 @@ def ensure_session_defaults() -> None:
 def render_header() -> None:
     st.title("Data Senior Analytics")
     st.caption("Senior-level analytics dashboard for business decision support")
+
+
+@st.cache_data
+def get_build_id() -> str:
+    env_build = os.getenv("STREAMLIT_GIT_SHA") or os.getenv("GITHUB_SHA")
+    if env_build:
+        return env_build[:8]
+    try:
+        out = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        ).strip()
+        if out:
+            return out
+    except Exception:  # noqa: BLE001
+        pass
+    return "unknown"
 
 
 def render_home(df: pd.DataFrame | None, db: SQLiteManager) -> None:
@@ -249,6 +269,7 @@ def main() -> None:
 
     with st.sidebar:
         st.markdown("## Active Context")
+        st.caption(f"Build: {get_build_id()}")
         st.caption(f"Page: {page}")
         if df is not None and not df.empty:
             st.caption(f"Dataset: {st.session_state.data_name}")
