@@ -203,6 +203,14 @@ st.markdown("""
         border-radius: 12px;
     }
 
+    [data-testid="stDataFrame"] [role="gridcell"],
+    [data-testid="stDataFrame"] [role="columnheader"],
+    [data-testid="stDataFrame"] [role="rowheader"] {
+        color: #111827 !important;
+        background-color: #ffffff !important;
+        opacity: 1 !important;
+    }
+
     .metric-card:empty, .info-box:empty, .upload-box:empty, .success-box:empty {
         display: none !important;
     }
