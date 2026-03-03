@@ -1,8 +1,7 @@
-﻿from pathlib import Path
+from pathlib import Path
 import importlib
 
 REQUIRED_PATHS = [
-    Path('streamlit_app.py'),
     Path('dashboard/app.py'),
     Path('.streamlit/config.toml'),
     Path('requirements.txt'),

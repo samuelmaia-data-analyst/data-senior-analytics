@@ -137,7 +137,6 @@ flowchart LR
 |-- requirements.txt
 |-- requirements-dev.txt
 |-- runtime.txt
-|-- streamlit_app.py
 |-- README.md
 `-- README.en.md
 ```
@@ -180,7 +179,7 @@ URL local: http://localhost:8501
 
 ## Deploy no Streamlit Cloud
 ### Configuração recomendada
-- Main file path: `streamlit_app.py`
+- Main file path: `dashboard/app.py`
 - Python runtime: `runtime.txt`
 - Dependências de produção: `requirements.txt`
 - Segredos: configurar no painel do Streamlit Cloud com base em `.streamlit/secrets.example.toml`

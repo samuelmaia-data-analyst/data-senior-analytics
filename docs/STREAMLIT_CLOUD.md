@@ -1,7 +1,7 @@
-﻿# Streamlit Cloud Deployment (Executive Standard)
+# Streamlit Cloud Deployment (Executive Standard)
 
 ## 1. Repository Readiness
-- Main entrypoint: `streamlit_app.py`
+- Main entrypoint: `dashboard/app.py`
 - Runtime pin: `runtime.txt`
 - Production dependencies: `requirements.txt`
 - Secrets template: `.streamlit/secrets.example.toml`
@@ -10,7 +10,7 @@
 ## 2. Streamlit Cloud App Settings
 - Repository: `samuelmaia-data-analyst/data-senior-analytics`
 - Branch: `main`
-- Main file path: `streamlit_app.py`
+- Main file path: `dashboard/app.py`
 - Python version: read from `runtime.txt`
 
 ## 3. Secrets and Configuration
@@ -33,14 +33,21 @@ python scripts/set_kaggle_provenance.py \
   --license "LICENSE_NAME"
 ```
 
-## 5. Pre-Deploy Quality Gates`r`n`r`nOptional shortcut:`r`n```bash`r`nmake quality`r`n```
+## 5. Pre-Deploy Quality Gates
+Optional shortcut:
+
+```bash
+make quality
+```
+
 Run locally before publish:
 
 ```bash
 python -m ruff check src config scripts dashboard tests
 python -m pytest
 python scripts/check_encoding.py
-python scripts/streamlit_cloud_preflight.py`npython scripts/validate_data_provenance.py
+python scripts/streamlit_cloud_preflight.py
+python scripts/validate_data_provenance.py
 ```
 
 ## 6. Post-Deploy Smoke Test
@@ -52,5 +59,3 @@ python scripts/streamlit_cloud_preflight.py`npython scripts/validate_data_proven
   - render charts
   - save/read SQLite table
 - Confirm no corrupted characters in UI text
-
-
