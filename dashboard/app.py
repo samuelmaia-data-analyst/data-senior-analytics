@@ -70,6 +70,36 @@ def apply_executive_style() -> None:
                 color: #475569;
                 font-size: 0.95rem;
             }
+            div[data-testid="stMetric"] {
+                background: #ffffff;
+                border: 1px solid #d8dee8;
+                border-radius: 12px;
+                padding: 0.45rem 0.7rem;
+                box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+            }
+            div[role="radiogroup"] > label {
+                border: 1px solid #d8dee8;
+                border-radius: 10px;
+                padding: 0.18rem 0.55rem;
+                background: #ffffff;
+                margin-right: 0.2rem;
+            }
+            .exec-pill {
+                display: inline-block;
+                padding: 0.2rem 0.55rem;
+                border-radius: 999px;
+                border: 1px solid #cbd5e1;
+                color: #0f172a;
+                font-size: 0.78rem;
+                background: #f8fafc;
+                margin-bottom: 0.4rem;
+            }
+            .exec-card-title {
+                font-size: 1.05rem;
+                font-weight: 700;
+                color: #0f172a;
+                margin-bottom: 0.35rem;
+            }
         </style>
         """,
         unsafe_allow_html=True,
@@ -164,14 +194,16 @@ def render_home(df: pd.DataFrame | None, db: SQLiteManager) -> None:
     left, right = st.columns(2)
     with left:
         with st.container(border=True):
-            st.markdown("### Objetivo")
+            st.markdown('<span class="exec-pill">Direcionamento</span>', unsafe_allow_html=True)
+            st.markdown('<div class="exec-card-title">Objetivo</div>', unsafe_allow_html=True)
             st.write("Transformar dados tabulares em insights acionaveis para decisao rapida e segura.")
-            st.markdown("### Valor")
+            st.markdown('<div class="exec-card-title">Valor</div>', unsafe_allow_html=True)
             st.write("Fluxo analitico ponta a ponta com padrao senior e foco em negocio.")
 
     with right:
         with st.container(border=True):
-            st.markdown("### Status dos Dados")
+            st.markdown('<span class="exec-pill">Contexto de dados</span>', unsafe_allow_html=True)
+            st.markdown('<div class="exec-card-title">Status dos Dados</div>', unsafe_allow_html=True)
             if df is not None and not df.empty:
                 st.write(f"Dataset: **{st.session_state.data_name}**")
                 st.write(f"Linhas: **{df.shape[0]:,}**")
@@ -179,6 +211,32 @@ def render_home(df: pd.DataFrame | None, db: SQLiteManager) -> None:
                 st.write(f"Fonte: **{st.session_state.data_source}**")
             else:
                 st.info("Nenhum dataset carregado no momento.")
+
+    s1, s2, s3 = st.columns(3)
+    if df is not None and not df.empty:
+        null_rate = (df.isna().sum().sum() / max(1, (df.shape[0] * df.shape[1]))) * 100
+        dup_rate = (df.duplicated().sum() / max(1, df.shape[0])) * 100
+        numeric_cols = df.select_dtypes(include="number").shape[1]
+        insight_msg = f"Dataset pronto para exploracao com {numeric_cols} colunas numericas."
+        risk_msg = f"Nulos: {null_rate:.2f}% | Duplicadas: {dup_rate:.2f}%."
+        action_msg = "Priorizar EDA e, em seguida, consolidar tabela curada no SQLite."
+    else:
+        insight_msg = "Sem dataset ativo para gerar leitura executiva."
+        risk_msg = "Sem risco calculavel sem dados carregados."
+        action_msg = "Iniciar pela pagina Upload e validar qualidade minima."
+
+    with s1:
+        with st.container(border=True):
+            st.markdown('<span class="exec-pill">Insight</span>', unsafe_allow_html=True)
+            st.write(insight_msg)
+    with s2:
+        with st.container(border=True):
+            st.markdown('<span class="exec-pill">Risco</span>', unsafe_allow_html=True)
+            st.write(risk_msg)
+    with s3:
+        with st.container(border=True):
+            st.markdown('<span class="exec-pill">Acao</span>', unsafe_allow_html=True)
+            st.write(action_msg)
 
 
 def render_upload(db: SQLiteManager) -> None:
