@@ -25,9 +25,9 @@ PAGE_OPTIONS = [
     "Upload",
     "Dados",
     "EDA",
-    "Visualizacoes",
+    "Visualizações",
     "Banco",
-    "Configuracoes",
+    "Configurações",
 ]
 
 st.set_page_config(
@@ -160,7 +160,7 @@ def render_header(df: pd.DataFrame | None) -> None:
         """
         <div class="hero">
             <h1 class="hero-title">Data Senior Analytics</h1>
-            <p class="hero-subtitle">Painel executivo para diagnostico, exploracao e suporte a decisao.</p>
+            <p class="hero-subtitle">Painel executivo para diagnóstico, exploração e suporte à decisão.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -196,9 +196,9 @@ def render_home(df: pd.DataFrame | None, db: SQLiteManager) -> None:
         with st.container(border=True):
             st.markdown('<span class="exec-pill">Direcionamento</span>', unsafe_allow_html=True)
             st.markdown('<div class="exec-card-title">Objetivo</div>', unsafe_allow_html=True)
-            st.write("Transformar dados tabulares em insights acionaveis para decisao rapida e segura.")
+            st.write("Transformar dados tabulares em insights acionáveis para decisão rápida e segura.")
             st.markdown('<div class="exec-card-title">Valor</div>', unsafe_allow_html=True)
-            st.write("Fluxo analitico ponta a ponta com padrao senior e foco em negocio.")
+            st.write("Fluxo analítico ponta a ponta com padrão sênior e foco em negócio.")
 
     with right:
         with st.container(border=True):
@@ -228,14 +228,14 @@ def render_home(df: pd.DataFrame | None, db: SQLiteManager) -> None:
     with s1:
         with st.container(border=True):
             st.markdown('<span class="exec-pill">Insight</span>', unsafe_allow_html=True)
-            st.write(insight_msg)
+            st.write(insight_msg.replace("exploracao", "exploração"))
     with s2:
         with st.container(border=True):
             st.markdown('<span class="exec-pill">Risco</span>', unsafe_allow_html=True)
             st.write(risk_msg)
     with s3:
         with st.container(border=True):
-            st.markdown('<span class="exec-pill">Acao</span>', unsafe_allow_html=True)
+            st.markdown('<span class="exec-pill">Ação</span>', unsafe_allow_html=True)
             st.write(action_msg)
 
 
@@ -244,7 +244,7 @@ def render_upload(db: SQLiteManager) -> None:
     uploaded = st.file_uploader("Envie CSV ou Excel", type=["csv", "xlsx", "xls"])
 
     if uploaded is None:
-        st.info("Envie um arquivo para substituir o dataset de demonstracao.")
+        st.info("Envie um arquivo para substituir o dataset de demonstração.")
         return
 
     if uploaded.name.endswith(".csv"):
@@ -262,10 +262,10 @@ def render_upload(db: SQLiteManager) -> None:
     with k2:
         st.metric("Colunas", df.shape[1])
     with k3:
-        st.metric("Memoria", f"{df.memory_usage(deep=True).sum() / (1024 * 1024):.2f} MB")
+        st.metric("Memória", f"{df.memory_usage(deep=True).sum() / (1024 * 1024):.2f} MB")
 
     st.success(f"Arquivo carregado com sucesso: {uploaded.name}")
-    st.caption("Previa (primeiras 50 linhas)")
+    st.caption("Prévia (primeiras 50 linhas)")
     st.table(df.head(50))
 
     table_name = st.text_input(
@@ -282,15 +282,15 @@ def render_upload(db: SQLiteManager) -> None:
 
 
 def render_data_preview(df: pd.DataFrame | None) -> None:
-    st.subheader("Visualizacao dos Dados")
+    st.subheader("Visualização dos Dados")
     if df is None or df.empty:
-        st.warning("Nenhum dado disponivel.")
+        st.warning("Nenhum dado disponível.")
         return
 
     tab1, tab2 = st.tabs(["Amostra", "Perfil de Colunas"])
 
     with tab1:
-        st.caption("Previa (primeiras 200 linhas)")
+        st.caption("Prévia (primeiras 200 linhas)")
         st.table(df.head(200))
 
     with tab2:
@@ -299,16 +299,16 @@ def render_data_preview(df: pd.DataFrame | None) -> None:
                 "Coluna": df.columns,
                 "Tipo": df.dtypes.astype(str).values,
                 "Nulos": df.isna().sum().values,
-                "Unicos": [df[c].nunique(dropna=True) for c in df.columns],
+                "Únicos": [df[c].nunique(dropna=True) for c in df.columns],
             }
         )
         st.table(info)
 
 
 def render_eda(df: pd.DataFrame | None) -> None:
-    st.subheader("Analise Exploratoria")
+    st.subheader("Análise Exploratória")
     if df is None or df.empty:
-        st.warning("Nenhum dado disponivel.")
+        st.warning("Nenhum dado disponível.")
         return
 
     numeric = df.select_dtypes(include="number")
@@ -322,10 +322,10 @@ def render_eda(df: pd.DataFrame | None) -> None:
         st.metric("Linhas duplicadas", int(df.duplicated().sum()))
 
     if numeric.empty:
-        st.info("Nao ha colunas numericas para estatistica descritiva.")
+        st.info("Não há colunas numéricas para estatística descritiva.")
         return
 
-    tab_stats, tab_corr = st.tabs(["Estatistica", "Correlacao"])
+    tab_stats, tab_corr = st.tabs(["Estatística", "Correlação"])
 
     with tab_stats:
         st.table(numeric.describe().T)
@@ -333,24 +333,24 @@ def render_eda(df: pd.DataFrame | None) -> None:
     with tab_corr:
         if numeric.shape[1] > 1:
             corr = numeric.corr(numeric_only=True)
-            fig = px.imshow(corr, text_auto=True, aspect="auto", title="Matriz de Correlacao")
+            fig = px.imshow(corr, text_auto=True, aspect="auto", title="Matriz de Correlação")
             st.plotly_chart(fig, use_container_width=True)
         else:
-            st.info("Sao necessarias ao menos 2 colunas numericas.")
+            st.info("São necessárias ao menos 2 colunas numéricas.")
 
 
 def render_charts(df: pd.DataFrame | None) -> None:
-    st.subheader("Visualizacoes")
+    st.subheader("Visualizações")
     if df is None or df.empty:
-        st.warning("Nenhum dado disponivel.")
+        st.warning("Nenhum dado disponível.")
         return
 
     numeric_cols = df.select_dtypes(include="number").columns.tolist()
     cat_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
 
     if numeric_cols:
-        col = st.selectbox("Variavel numerica", numeric_cols, key="chart_numeric_variable")
-        fig = px.histogram(df, x=col, nbins=30, title=f"Distribuicao: {col}")
+        col = st.selectbox("Variável numérica", numeric_cols, key="chart_numeric_variable")
+        fig = px.histogram(df, x=col, nbins=30, title=f"Distribuição: {col}")
         st.plotly_chart(fig, use_container_width=True)
 
     if cat_cols and numeric_cols:
@@ -359,13 +359,13 @@ def render_charts(df: pd.DataFrame | None) -> None:
             cat = st.selectbox("Categoria", cat_cols, key="chart_category")
         with right:
             val = st.selectbox(
-                "Metrica",
+                "Métrica",
                 numeric_cols,
                 index=min(1, len(numeric_cols) - 1),
                 key="chart_metric",
             )
         grouped = df.groupby(cat, dropna=False)[val].mean().reset_index().sort_values(val, ascending=False)
-        fig = px.bar(grouped.head(15), x=cat, y=val, title=f"Media de {val} por {cat}")
+        fig = px.bar(grouped.head(15), x=cat, y=val, title=f"Média de {val} por {cat}")
         st.plotly_chart(fig, use_container_width=True)
 
 
@@ -381,12 +381,12 @@ def render_database(db: SQLiteManager) -> None:
     st.metric("Linhas na tabela", int(count))
 
     preview = db.sql_to_df(f"SELECT * FROM [{table}] LIMIT 500")
-    st.caption("Previa da tabela (ate 500 linhas)")
+    st.caption("Prévia da tabela (até 500 linhas)")
     st.table(preview)
 
 
 def render_settings(df: pd.DataFrame | None) -> None:
-    st.subheader("Configuracoes e Runtime")
+    st.subheader("Configurações e Runtime")
     st.json(
         {
             "timestamp": datetime.now().isoformat(timespec="seconds"),
@@ -407,7 +407,7 @@ def main() -> None:
 
     render_header(df)
     page = st.radio(
-        "Navegacao",
+        "Navegação",
         PAGE_OPTIONS,
         horizontal=True,
         key="selected_page",
@@ -417,15 +417,15 @@ def main() -> None:
     with st.sidebar:
         st.markdown("## Contexto")
         st.caption(f"Build: `{get_build_id()}`")
-        st.caption(f"Pagina: **{page}**")
+        st.caption(f"Página: **{page}**")
         if df is not None and not df.empty:
             st.caption(f"Dataset: **{st.session_state.data_name}**")
             st.caption(f"Linhas: {df.shape[0]:,}")
             st.caption(f"Colunas: {df.shape[1]}")
             if st.session_state.data_source == "sample_auto":
-                st.info("Dataset padrao carregado automaticamente.")
+                st.info("Dataset padrão carregado automaticamente.")
 
-        if st.button("Resetar sessao", use_container_width=True):
+        if st.button("Resetar sessão", use_container_width=True):
             for key in ("data", "data_name", "data_source"):
                 if key in st.session_state:
                     del st.session_state[key]
@@ -436,15 +436,15 @@ def main() -> None:
         "Upload": lambda: render_upload(db),
         "Dados": lambda: render_data_preview(df),
         "EDA": lambda: render_eda(df),
-        "Visualizacoes": lambda: render_charts(df),
+        "Visualizações": lambda: render_charts(df),
         "Banco": lambda: render_database(db),
-        "Configuracoes": lambda: render_settings(df),
+        "Configurações": lambda: render_settings(df),
     }
 
     try:
         page_handlers[page]()
     except Exception as exc:  # noqa: BLE001
-        st.error("Falha ao renderizar esta pagina. O app continua disponivel.")
+        st.error("Falha ao renderizar esta página. O app continua disponível.")
         st.exception(exc)
 
 
