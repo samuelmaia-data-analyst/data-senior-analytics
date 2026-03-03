@@ -1,3 +1,5 @@
-﻿"""Entrypoint padrão para Streamlit Community Cloud."""
+"""Entrypoint padrao para Streamlit Community Cloud."""
 
-from dashboard import app  # noqa: F401
+from dashboard.app import main
+
+main()

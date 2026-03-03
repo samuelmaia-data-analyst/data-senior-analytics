@@ -266,4 +266,5 @@ def main() -> None:
         render_settings(df)
 
 
-main()
+if __name__ == "__main__":
+    main()
