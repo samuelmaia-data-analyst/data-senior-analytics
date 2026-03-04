@@ -21,6 +21,8 @@
 - [ ] `python scripts/check_encoding.py`
 - [ ] `python scripts/streamlit_cloud_preflight.py`
 - [ ] `python scripts/validate_data_provenance.py`
+- [ ] `python scripts/generate_data_manifest.py --check`
+- [ ] `python scripts/check_secrets.py`
 - [ ] Coverage is at/above target
 
 ## Artifacts

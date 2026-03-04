@@ -19,6 +19,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from config.settings import Settings  # noqa: E402
 from src.data.sqlite_manager import SQLiteManager  # noqa: E402
+from src.utils.observability import get_structured_logger, new_trace_id, timed_stage  # noqa: E402
 
 PAGE_OPTIONS = [
     "Resumo",
@@ -36,6 +37,8 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+APP_LOGGER = get_structured_logger("dashboard_app")
 
 
 def apply_executive_style() -> None:
@@ -467,10 +470,21 @@ def render_settings(df: pd.DataFrame | None) -> None:
 
 
 def main() -> None:
+    trace_id = new_trace_id()
     ensure_session_defaults()
     apply_executive_style()
     db = get_db()
     df = st.session_state.data
+    APP_LOGGER.info(
+        "app_start",
+        extra={
+            "trace_id": trace_id,
+            "data_source": st.session_state.data_source,
+            "data_name": st.session_state.data_name,
+            "rows": int(df.shape[0]) if df is not None else 0,
+            "columns": int(df.shape[1]) if df is not None else 0,
+        },
+    )
 
     render_header(df)
     page = st.radio(
@@ -509,8 +523,16 @@ def main() -> None:
     }
 
     try:
-        page_handlers[page]()
+        with timed_stage(f"render_page:{page}") as timer:
+            page_handlers[page]()
+        APP_LOGGER.info(
+            "page_rendered",
+            extra={"trace_id": trace_id, "page": page, "elapsed_ms": round(timer.elapsed_ms, 2)},
+        )
     except Exception as exc:  # noqa: BLE001
+        APP_LOGGER.error(
+            "page_render_failed", extra={"trace_id": trace_id, "page": page, "error": str(exc)}
+        )
         st.error("Falha ao renderizar esta página. O app continua disponível.")
         st.exception(exc)
 

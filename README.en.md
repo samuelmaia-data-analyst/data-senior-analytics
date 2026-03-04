@@ -30,6 +30,7 @@ Live demo: https://data-analytics-sr.streamlit.app
 - Architecture decisions (ADR): [docs/adr](docs/adr)
 - Data contract (`raw/bronze/silver/gold`): [docs/DATA_CONTRACT.md](docs/DATA_CONTRACT.md)
 - Data provenance: [docs/DATA_PROVENANCE.md](docs/DATA_PROVENANCE.md)
+- Data lineage manifest: [docs/DATA_LINEAGE.md](docs/DATA_LINEAGE.md)
 
 ## Reproducible Run
 ```bash
@@ -62,6 +63,7 @@ Copy `.env.example` to `.env` and adjust values for your environment.
 ## Quality and Engineering
 - `pytest-cov` with coverage gate (`>=70%`)
 - `ruff` + `black` + optional `mypy` via pre-commit
+- Secret scanning and manifest drift checks in CI
 - Gold output contract tests under `tests/`
 
 ## Release Management

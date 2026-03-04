@@ -49,11 +49,14 @@ make test
 python scripts/check_encoding.py
 python scripts/streamlit_cloud_preflight.py
 python scripts/validate_data_provenance.py
+python scripts/generate_data_manifest.py --check
+python scripts/check_secrets.py
 ```
 
 ## Data and Contract Governance
 When changing pipeline outputs:
 - Update `docs/DATA_CONTRACT.md` if schema/quality rules change.
+- Regenerate `docs/data_manifest.json` via `python scripts/generate_data_manifest.py` when versioned data files change.
 - Add or update output contract tests in `tests/`.
 - Ensure no raw sensitive data is committed.
 

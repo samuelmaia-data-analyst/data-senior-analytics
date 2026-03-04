@@ -47,3 +47,5 @@ sequenceDiagram
 - CI gate: lint + format + tests + coverage (`>=70%`).
 - Data contract and output contract tests for predictable Gold outputs.
 - ADR folder to document architecture decisions.
+- Structured runtime logs with trace id and per-page timing in dashboard runtime.
+- Data manifest checksum validation to prevent unnoticed dataset drift.

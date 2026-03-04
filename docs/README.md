@@ -5,6 +5,7 @@ This folder centralizes architecture, governance, and delivery documentation.
 ## Core Docs
 - [ARCHITECTURE.md](ARCHITECTURE.md): layered design and runtime flow.
 - [DATA_CONTRACT.md](DATA_CONTRACT.md): raw/bronze/silver/gold schema and quality expectations.
+- [DATA_LINEAGE.md](DATA_LINEAGE.md): manifest-based lineage and reproducibility process.
 - [DATA_PROVENANCE.md](DATA_PROVENANCE.md): source lineage and governance notes.
 - [STREAMLIT_CLOUD.md](STREAMLIT_CLOUD.md): deployment runbook.
 
