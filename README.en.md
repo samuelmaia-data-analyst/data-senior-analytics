@@ -21,9 +21,30 @@ Live demo: https://data-analytics-sr.streamlit.app
 - Assumptions: input is CSV/XLSX from business users, with mixed quality and partial missing values.
 - Outcomes: faster insight turnaround with stable output schema for dashboard and stakeholder consumption.
 
+## Business Impact
+- Potential churn reduction: X%
+- Estimated revenue protection: $X per year
+- Customer lifetime value improvement: X%
+
+## Dataset Description
+- Source: `data/sample/default_demo.csv`
+- Rows: 12
+- Columns: 9
+- Key variables: `cliente_id`, `valor_total`, `quantidade`, `preco_unitario`, `desconto`, `categoria`, `regiao`
+
 ## Screenshots / Demo
 ![Dashboard Preview](assets/images/dashboard-preview.png)
 ![Dashboard Insight View](assets/images/Screenshot_2.png)
+
+## Architecture Diagram
+```mermaid
+flowchart TD
+    A[Data Sources] --> B[Data Ingestion]
+    B --> C[Data Processing]
+    C --> D[Feature Engineering]
+    D --> E[ML Model]
+    E --> F[Dashboard]
+```
 
 ## Architecture Proof
 - Layered architecture and flow: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
@@ -31,6 +52,16 @@ Live demo: https://data-analytics-sr.streamlit.app
 - Data contract (`raw/bronze/silver/gold`): [docs/DATA_CONTRACT.md](docs/DATA_CONTRACT.md)
 - Data provenance: [docs/DATA_PROVENANCE.md](docs/DATA_PROVENANCE.md)
 - Data lineage manifest: [docs/DATA_LINEAGE.md](docs/DATA_LINEAGE.md)
+
+## Business Recommendations
+- Prioritize customers with high churn probability
+- Deploy retention campaigns
+- Monitor churn drivers monthly
+
+## Future Improvements
+- model drift detection
+- automated retraining
+- feature store integration
 
 ## Reproducible Run
 ```bash
