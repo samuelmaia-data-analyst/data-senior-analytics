@@ -19,37 +19,75 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
+        id: install
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
           python -m pip check
 
+      - name: Show tool versions
+        id: versions
+        run: |
+          python --version
+          pip --version
+          ruff --version
+          black --version
+          pytest --version
+
       - name: Ruff lint
+        id: ruff
         run: ruff check src config scripts dashboard tests
 
       - name: Black format check
+        id: black
         run: black --check src config scripts dashboard tests
 
       - name: Run tests with coverage
+        id: tests
         run: pytest
 
       - name: Upload coverage to Codecov
+        id: codecov
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage.xml
           fail_ci_if_error: false
 
       - name: Encoding check
+        id: encoding
         run: python scripts/check_encoding.py
 
       - name: Streamlit Cloud preflight
+        id: preflight
         run: python scripts/streamlit_cloud_preflight.py
 
       - name: Data provenance check
+        id: provenance
         run: python scripts/validate_data_provenance.py
 
       - name: Data manifest check
+        id: manifest
         run: python scripts/generate_data_manifest.py --check
 
       - name: Secret scan
+        id: secrets
         run: python scripts/check_secrets.py
+
+      - name: CI summary
+        if: always()
+        run: |
+          echo "## CI Step Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Step | Outcome |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| Install dependencies | ${{ steps.install.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tool versions | ${{ steps.versions.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Ruff lint | ${{ steps.ruff.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Black format check | ${{ steps.black.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tests with coverage | ${{ steps.tests.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Codecov upload | ${{ steps.codecov.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Encoding check | ${{ steps.encoding.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Streamlit preflight | ${{ steps.preflight.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Data provenance check | ${{ steps.provenance.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Data manifest check | ${{ steps.manifest.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Secret scan | ${{ steps.secrets.outcome }} |" >> $GITHUB_STEP_SUMMARY
