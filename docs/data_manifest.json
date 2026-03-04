@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-04T13:48:39.781389+00:00",
+  "generated_at_utc": "2026-03-04T17:20:34.752639+00:00",
   "source_patterns": [
     "data/sample/*.csv",
     "data/raw/*.csv",
@@ -11,7 +11,7 @@
       "path": "data/sample/default_demo.csv",
       "size_bytes": 784,
       "modified_utc": "2026-03-03T16:09:30.190227+00:00",
-      "sha256": "5dd315463cc60f05fb269bef76a0bc79b4d7ac971c1ba762bd71c595b74ef75c",
+      "sha256": "a632b4c2101f30c89da2d31e3b662315d0dc28ecc6f2849c5a7ece06ba6458f7",
       "shape": {
         "rows": 12,
         "columns": 9

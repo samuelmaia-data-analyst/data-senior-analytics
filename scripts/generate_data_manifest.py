@@ -21,6 +21,12 @@ DATA_GLOBS = (
 
 def sha256_file(path: Path) -> str:
     hasher = hashlib.sha256()
+    if path.suffix.lower() == ".csv":
+        # Normalize newlines to avoid cross-platform checksum drift.
+        content = path.read_bytes().replace(b"\r\n", b"\n")
+        hasher.update(content)
+        return hasher.hexdigest()
+
     with path.open("rb") as handle:
         while True:
             chunk = handle.read(1024 * 1024)
@@ -72,6 +78,18 @@ def build_manifest(root: Path) -> dict[str, object]:
 def normalize_for_check(manifest: dict[str, object]) -> dict[str, object]:
     normalized = dict(manifest)
     normalized["generated_at_utc"] = "IGNORED"
+    normalized_files = []
+    for entry in normalized.get("files", []):
+        if not isinstance(entry, dict):
+            continue
+        normalized_files.append(
+            {
+                "path": entry.get("path"),
+                "sha256": entry.get("sha256"),
+                "shape": entry.get("shape"),
+            }
+        )
+    normalized["files"] = normalized_files
     return normalized
 
 
