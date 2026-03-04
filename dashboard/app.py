@@ -303,6 +303,34 @@ def render_home(df: pd.DataFrame | None, db: SQLiteManager) -> None:
         st.caption("Clareza Executiva")
         st.progress(92)
 
+    st.markdown("### Sinais de Senioridade Técnica")
+    st.write(
+        "- Arquitetura em camadas com responsabilidades claras (`dashboard/`, `src/`, `config/`)."
+    )
+    st.write("- Pipeline executável localmente com `make` e validações de preflight.")
+    st.write("- Qualidade com testes automatizados, cobertura e contrato de dados.")
+    st.write("- Dashboard orientado à decisão com KPI, tendência e leitura executiva.")
+
+    if df is not None and not df.empty and {"categoria", "valor_total"}.issubset(df.columns):
+        category_revenue = (
+            df.groupby("categoria", dropna=False)["valor_total"]
+            .sum()
+            .sort_values(ascending=False)
+            .head(10)
+            .reset_index()
+        )
+        top_n = len(category_revenue)
+        fig = px.bar(
+            category_revenue,
+            x="valor_total",
+            y="categoria",
+            orientation="h",
+            title=f"Top {top_n} Categorias por Receita",
+            labels={"categoria": "categoria_produto", "valor_total": "receita"},
+        )
+        fig.update_layout(yaxis={"categoryorder": "total ascending"})
+        st.plotly_chart(fig, use_container_width=True)
+
 
 def render_upload(db: SQLiteManager) -> None:
     st.subheader("Upload de Dados")
