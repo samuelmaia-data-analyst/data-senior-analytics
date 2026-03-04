@@ -1,22 +1,33 @@
-﻿## Summary
-- [ ] What changed
-- [ ] Why it changed
+﻿## Scope
+- [ ] What changed (objective and files/modules)
+- [ ] Why it changed (problem being solved)
 
-## Business Impact
-- [ ] Expected impact on insights or decision quality
-- [ ] Risks and mitigations
+## Impact
+- [ ] Business/analytics impact
+- [ ] Breaking change? If yes, describe migration
+
+## Risk Assessment
+- [ ] Main risks identified
+- [ ] Mitigation and rollback plan documented
 
 ## Data Governance
-- [ ] Kaggle provenance updated (if dataset changed)
-- [ ] No raw sensitive data committed
+- [ ] `docs/DATA_PROVENANCE.md` updated (if data source changed)
+- [ ] `docs/DATA_CONTRACT.md` updated (if output contract changed)
+- [ ] No raw or sensitive data committed
 
-## Quality Gates
-- [ ] `python -m ruff check src config scripts dashboard tests`
-- [ ] `python -m pytest`
+## Validation Evidence
+- [ ] `make lint`
+- [ ] `make test`
 - [ ] `python scripts/check_encoding.py`
 - [ ] `python scripts/streamlit_cloud_preflight.py`
 - [ ] `python scripts/validate_data_provenance.py`
+- [ ] Coverage is at/above target
 
-## Deployment Notes
-- [ ] Streamlit Cloud impact assessed
-- [ ] Secrets/config changes documented
+## Artifacts
+- [ ] Screenshots/GIF attached when UI changes
+- [ ] ADR updated/added when architecture decision changed
+- [ ] Changelog updated when release-relevant
+
+## Reviewer Notes
+- [ ] Key files to review first
+- [ ] Open questions / follow-ups
