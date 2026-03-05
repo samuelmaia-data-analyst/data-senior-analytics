@@ -1,0 +1,59 @@
+version: 1
+entity: customer
+description: Customer-level contract for churn scoring and decision activation.
+
+primary_key:
+  - customer_id
+
+fields:
+  - name: customer_id
+    type: string
+    required: true
+    nullable: false
+    example: "CUST-1001"
+
+  - name: reference_date
+    type: date
+    format: "YYYY-MM-DD"
+    required: true
+    nullable: false
+    example: "2026-03-05"
+
+  - name: churn_probability
+    type: float
+    required: true
+    nullable: false
+    constraints:
+      min: 0.0
+      max: 1.0
+    example: 0.82
+
+  - name: risk_band
+    type: string
+    required: true
+    nullable: false
+    allowed_values:
+      - low
+      - medium
+      - high
+    example: "high"
+
+  - name: recommended_action
+    type: string
+    required: true
+    nullable: false
+    allowed_values:
+      - monitor
+      - offer_discount
+      - trigger_retention_campaign
+    example: "trigger_retention_campaign"
+
+quality_rules:
+  - name: unique_customer_reference
+    rule: "customer_id + reference_date must be unique"
+  - name: probability_range
+    rule: "churn_probability must be between 0.0 and 1.0"
+  - name: decision_rule_alignment
+    rule: "if churn_probability > 0.75 then recommended_action = trigger_retention_campaign"
+  - name: decision_rule_alignment_discount
+    rule: "if 0.60 <= churn_probability <= 0.75 then recommended_action = offer_discount"

@@ -58,6 +58,7 @@ flowchart TD
 - Layered architecture and flow: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Architecture decision record (ADR): [docs/adr/0001-architecture-decision.md](docs/adr/0001-architecture-decision.md)
 - Data contract (`raw/bronze/silver/gold`): [docs/DATA_CONTRACT.md](docs/DATA_CONTRACT.md)
+- Customer scoring contract: [contracts/schema_customer.yaml](contracts/schema_customer.yaml)
 - Data provenance: [docs/DATA_PROVENANCE.md](docs/DATA_PROVENANCE.md)
 - Data lineage manifest: [docs/DATA_LINEAGE.md](docs/DATA_LINEAGE.md)
 
@@ -74,6 +75,17 @@ flowchart TD
 | Portfolio prioritization | category-level revenue decline | If one category drops >8% for 3 months | Adjust product mix, bundles, and cross-sell motions |
 | Data quality escalation | nulls/duplicates rise in uploaded data | If nulls >3% or duplicates >1% | Hold executive reporting and trigger data-owner remediation |
 | Concentration risk mitigation | revenue too concentrated in few accounts | If top 10 customers >35% of revenue | Execute account diversification and key-account protection plan |
+
+## Decision Framework
+- If churn probability > 0.75
+  -> Trigger retention campaign
+- If churn probability between 0.60-0.75
+  -> Offer discount
+
+## Model Monitoring
+- drift detection
+- prediction distribution
+- retraining trigger
 
 ## Future Improvements
 - model drift detection

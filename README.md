@@ -58,6 +58,7 @@ flowchart TD
 - Arquitetura em camadas e fluxo: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Registro de decisão arquitetural (ADR): [docs/adr/0001-architecture-decision.md](docs/adr/0001-architecture-decision.md)
 - Contrato de dados (`raw/bronze/silver/gold`): [docs/DATA_CONTRACT.md](docs/DATA_CONTRACT.md)
+- Contrato de scoring de cliente: [contracts/schema_customer.yaml](contracts/schema_customer.yaml)
 - Proveniência de dados: [docs/DATA_PROVENANCE.md](docs/DATA_PROVENANCE.md)
 - Manifesto de linhagem de dados: [docs/DATA_LINEAGE.md](docs/DATA_LINEAGE.md)
 
@@ -74,6 +75,17 @@ flowchart TD
 | Prioridade de portfólio | queda de receita por categoria | Se uma categoria cair >8% por 3 meses | Reforçar mix de produtos, bundles e ações de cross-sell |
 | Qualidade de dados | nulos/duplicados aumentam no upload | Se nulos >3% ou duplicados >1% | Bloquear publicação para diretoria e abrir correção com donos dos dados |
 | Risco de concentração | receita concentrada em poucos clientes | Se top 10 clientes >35% da receita | Plano de diversificação de carteira e proteção de contas-chave |
+
+## Decision Framework
+- If churn probability > 0.75
+  -> Trigger retention campaign
+- If churn probability between 0.60-0.75
+  -> Offer discount
+
+## Model Monitoring
+- drift detection
+- prediction distribution
+- retraining trigger
 
 ## Melhorias Futuras
 - detecção de drift de modelo
