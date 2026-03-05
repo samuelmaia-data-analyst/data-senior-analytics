@@ -142,6 +142,14 @@ def load_default_demo_data() -> pd.DataFrame:
 
 
 @st.cache_data
+def load_large_demo_data() -> pd.DataFrame:
+    large_path = Settings.SAMPLE_DATA_DIR / "sample_large.csv"
+    if large_path.exists():
+        return pd.read_csv(large_path)
+    return pd.DataFrame()
+
+
+@st.cache_data
 def get_build_id() -> str:
     env_build = os.getenv("STREAMLIT_GIT_SHA") or os.getenv("GITHUB_SHA")
     if env_build:
@@ -330,6 +338,41 @@ def render_home(df: pd.DataFrame | None, db: SQLiteManager) -> None:
 
 def render_upload(db: SQLiteManager) -> None:
     st.subheader("Data Upload")
+    st.caption("Use upload manual ou carregue um dataset demo pronto.")
+
+    demo_col_1, demo_col_2 = st.columns(2)
+    with demo_col_1:
+        if st.button(
+            "Load default demo (12 rows)",
+            key="load_default_demo_button",
+            use_container_width=True,
+        ):
+            df_demo = load_default_demo_data()
+            if df_demo.empty:
+                st.error("default_demo.csv not found in data/sample.")
+            else:
+                st.session_state.data = df_demo
+                st.session_state.data_name = "default_demo.csv"
+                st.session_state.data_source = "sample_manual"
+                st.success("Loaded default_demo.csv.")
+                st.rerun()
+    with demo_col_2:
+        if st.button(
+            "Load large demo (240 rows)",
+            key="load_large_demo_button",
+            use_container_width=True,
+        ):
+            df_large = load_large_demo_data()
+            if df_large.empty:
+                st.error("sample_large.csv not found in data/sample.")
+            else:
+                st.session_state.data = df_large
+                st.session_state.data_name = "sample_large.csv"
+                st.session_state.data_source = "sample_manual"
+                st.success("Loaded sample_large.csv.")
+                st.rerun()
+
+    st.markdown("---")
     uploaded = st.file_uploader("Upload CSV or Excel", type=["csv", "xlsx", "xls"])
 
     if uploaded is None:

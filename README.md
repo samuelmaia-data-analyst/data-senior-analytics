@@ -22,15 +22,23 @@ Demo online: https://data-analytics-sr.streamlit.app
 - Resultados: geração de insights mais rápida, com esquema de saída estável para dashboard e stakeholders.
 
 ## Impacto no Negócio
-- Potencial redução de churn: X%
-- Proteção estimada de receita: $X por ano
-- Melhoria de customer lifetime value (CLV): X%
+- Cenário simulado (premissas): 2.400 clientes ativos, churn anual de 18% e receita média anual de R$ 3.200 por cliente.
+- Potencial redução de churn: 2,5 p.p. (de 18,0% para 15,5%), equivalente a 60 clientes retidos por ano.
+- Proteção estimada de receita: R$ 192.000 por ano (60 clientes x R$ 3.200).
+- Melhoria estimada de customer lifetime value (CLV): +9% com retenção segmentada por risco.
 
 ## Descrição do Dataset
-- Fonte: `data/sample/default_demo.csv`
-- Linhas: 12
+- Fonte:
+  - `data/sample/default_demo.csv` (dataset rápido para smoke test)
+  - `data/sample/sample_large.csv` (dataset demo mais realista para exploração)
+- Linhas:
+  - `default_demo.csv`: 12
+  - `sample_large.csv`: 240
 - Colunas: 9
 - Variáveis-chave: `cliente_id`, `valor_total`, `quantidade`, `preco_unitario`, `desconto`, `categoria`, `regiao`
+- Como usar no dashboard:
+  - a aplicação carrega `default_demo.csv` automaticamente
+  - para análise mais robusta, use Upload com `data/sample/sample_large.csv`
 
 ## Capturas de Tela / Demo
 ![Dashboard Preview](assets/images/dashboard-preview.png)
@@ -57,6 +65,15 @@ flowchart TD
 - Priorizar clientes com alta probabilidade de churn
 - Executar campanhas de retenção
 - Monitorar direcionadores de churn mensalmente
+
+## Decision Playbook
+| Decisão | Sinal no dashboard | Quando agir | Ação recomendada |
+|---|---|---|---|
+| Retenção regional | `churn` estimado por região acima da média | Se uma região ficar >20% por 2 semanas | Campanha tática local com oferta de retenção e revisão de atendimento |
+| Reprecificação de desconto | desconto médio sobe e `valor_total` não acompanha | Se desconto médio >10% por 2 ciclos mensais | Recalibrar política comercial e limitar descontos fora de segmentos estratégicos |
+| Prioridade de portfólio | queda de receita por categoria | Se uma categoria cair >8% por 3 meses | Reforçar mix de produtos, bundles e ações de cross-sell |
+| Qualidade de dados | nulos/duplicados aumentam no upload | Se nulos >3% ou duplicados >1% | Bloquear publicação para diretoria e abrir correção com donos dos dados |
+| Risco de concentração | receita concentrada em poucos clientes | Se top 10 clientes >35% da receita | Plano de diversificação de carteira e proteção de contas-chave |
 
 ## Melhorias Futuras
 - detecção de drift de modelo

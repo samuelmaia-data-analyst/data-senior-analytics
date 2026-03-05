@@ -22,15 +22,23 @@ Live demo: https://data-analytics-sr.streamlit.app
 - Outcomes: faster insight turnaround with stable output schema for dashboard and stakeholder consumption.
 
 ## Business Impact
-- Potential churn reduction: X%
-- Estimated revenue protection: $X per year
-- Customer lifetime value improvement: X%
+- Simulated scenario (assumptions): 2,400 active customers, 18% annual churn, and BRL 3,200 average annual revenue per customer.
+- Potential churn reduction: 2.5 p.p. (from 18.0% to 15.5%), equivalent to 60 customers retained per year.
+- Estimated revenue protection: BRL 192,000 per year (60 customers x BRL 3,200).
+- Estimated customer lifetime value (CLV) uplift: +9% with risk-segmented retention actions.
 
 ## Dataset Description
-- Source: `data/sample/default_demo.csv`
-- Rows: 12
+- Source:
+  - `data/sample/default_demo.csv` (quick smoke-test dataset)
+  - `data/sample/sample_large.csv` (more realistic demo dataset for exploration)
+- Rows:
+  - `default_demo.csv`: 12
+  - `sample_large.csv`: 240
 - Columns: 9
 - Key variables: `cliente_id`, `valor_total`, `quantidade`, `preco_unitario`, `desconto`, `categoria`, `regiao`
+- How to use in the dashboard:
+  - the app auto-loads `default_demo.csv`
+  - for more robust analysis, upload `data/sample/sample_large.csv` in the Upload page
 
 ## Screenshots / Demo
 ![Dashboard Preview](assets/images/dashboard-preview.png)
@@ -57,6 +65,15 @@ flowchart TD
 - Prioritize customers with high churn probability
 - Deploy retention campaigns
 - Monitor churn drivers monthly
+
+## Decision Playbook
+| Decision | Dashboard signal | When to act | Recommended action |
+|---|---|---|---|
+| Regional retention push | estimated regional churn above baseline | If one region stays >20% for 2 weeks | Launch local tactical retention campaign and review service quality |
+| Discount repricing | average discount rises while `valor_total` stalls | If average discount >10% for 2 monthly cycles | Recalibrate pricing policy and cap discounts outside strategic segments |
+| Portfolio prioritization | category-level revenue decline | If one category drops >8% for 3 months | Adjust product mix, bundles, and cross-sell motions |
+| Data quality escalation | nulls/duplicates rise in uploaded data | If nulls >3% or duplicates >1% | Hold executive reporting and trigger data-owner remediation |
+| Concentration risk mitigation | revenue too concentrated in few accounts | If top 10 customers >35% of revenue | Execute account diversification and key-account protection plan |
 
 ## Future Improvements
 - model drift detection
