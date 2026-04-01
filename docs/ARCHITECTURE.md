@@ -1,28 +1,34 @@
 # Architecture
 
 ## Executive Summary
-The project follows a layered analytics architecture that separates business presentation, curation logic, exploratory analysis, and persistence. The dashboard is not only a UI shell: it orchestrates a governed path from raw upload to curated, decision-ready output.
+The project uses a layered analytics architecture to turn raw tabular inputs into curated, decision-ready outputs. The Streamlit dashboard is the product surface, but the design intentionally separates curation, profiling, executive scoring, persistence, and operational controls.
+
+## Architectural Intent
+- Preserve a clean boundary between UI concerns and analytical workflow orchestration.
+- Convert data quality into explicit release and decision signals.
+- Keep curation reusable outside the dashboard.
+- Make deployment and governance first-class parts of the system.
 
 ## Layers
-- Presentation layer: `dashboard/app.py` renders the executive experience, KPI cards, EDA tabs, and persistence flows.
-- Dashboard analytics layer: `dashboard/utils/analytics.py` converts technical profiling into executive metrics such as quality score, priority actions, and board-ready snapshots.
-- Application service layer: `src/app/curation_service.py` orchestrates curation, profiling, scoring, and executive snapshot generation.
-- Domain analytics layer: `src/analysis/exploratory.py` produces descriptive statistics and automated insights.
-- Data curation layer: `src/data/transformer.py` standardizes columns, infers types, treats missing values, and removes duplicates.
-- Persistence layer: `src/data/sqlite_manager.py` stores curated datasets in SQLite for downstream querying.
-- Platform/config layer: `config/settings.py`, `config/dashboard_policy.json`, `.streamlit/`, and validation scripts define runtime paths, scoring policy, deployment guardrails, and governance checks.
+- Presentation layer: `dashboard/app.py` renders the executive interface, KPI surfaces, EDA tabs, and persistence actions.
+- Dashboard analytics layer: `dashboard/utils/analytics.py` translates profiling into quality score, priority actions, executive snapshot, and correlation summaries.
+- Application service layer: `src/app/curation_service.py` orchestrates curation, profiling, scoring, and executive metadata generation.
+- Domain analytics layer: `src/analysis/exploratory.py` generates descriptive statistics and automated insights.
+- Data curation layer: `src/data/transformer.py` standardizes column names, infers types, handles missing values, and removes duplicates.
+- Persistence layer: `src/data/sqlite_manager.py` stores curated outputs in SQLite for downstream inspection and reuse.
+- Platform/config layer: `config/settings.py`, `config/dashboard_policy.json`, `.streamlit/`, and validation scripts define runtime paths, scoring policies, deployment expectations, and governance checks.
 
 ## End-to-End Flow
 ```mermaid
 flowchart LR
     A[Raw CSV / XLSX / Demo data] --> B[Streamlit upload or auto-load]
-    B --> C[DataTransformer]
+    B --> C[Curation service]
     C --> D[Curated DataFrame]
     D --> E[ExploratoryAnalyzer]
-    D --> F[Executive Snapshot + Quality Score]
+    D --> F[Executive score + snapshot]
     D --> G[(SQLite)]
-    E --> H[EDA tabs + diagnostics]
-    F --> I[Executive summary + board briefing]
+    E --> H[EDA + diagnostics]
+    F --> I[Executive dashboard]
 ```
 
 ## Runtime Sequence
@@ -36,30 +42,30 @@ sequenceDiagram
     participant AU as Dashboard Analytics Utils
     participant DB as SQLiteManager
 
-    U->>UI: Load demo or upload CSV/XLSX
-    UI->>AP: Trigger curation workflow
-    AP->>TR: Curate raw DataFrame
-    TR-->>UI: Clean, typed, deduplicated DataFrame
-    AP->>AN: Profile and analyze curated data
-    AN-->>AP: Stats and automated insights
+    U->>UI: Upload CSV/XLSX or load demo dataset
+    UI->>AP: Start curation workflow
+    AP->>TR: Standardize, infer, impute, deduplicate
+    TR-->>AP: Curated DataFrame + transformation log
+    AP->>AN: Produce statistics and automated insights
+    AN-->>AP: Analytical profile
     AP->>AU: Build quality summary and executive snapshot
     AU-->>UI: KPI, quality score, priority actions
-    UI->>DB: Persist curated output (optional)
+    UI->>DB: Persist curated dataset (optional)
     DB-->>UI: Queryable analytical tables
 ```
 
 ## Dashboard Operating Model
-- `Overview`: executive KPI, quality status, board briefing, top category, top region, revenue trend.
-- `Upload`: raw-to-curated flow, quality gate visibility, and persistence to SQLite.
-- `Data`: curated preview, raw preview, column profile, and transformation log.
-- `EDA`: insights, statistics, missing profile, and strongest correlations.
-- `Visualizations`: distribution, business mix, and trend analysis.
-- `Database`: operational verification of persisted analytical tables.
+- `Overview`: executive KPI, quality status, board briefing, commercial concentration, and trend view.
+- `Upload`: raw-to-curated transition with immediate quality feedback.
+- `Data`: raw vs. curated inspection, column profile, and transformation log.
+- `EDA`: automated insights, descriptive statistics, missing profile, and strongest correlations.
+- `Visualizations`: distribution analysis, business mix, and time trend exploration.
+- `Database`: operational confirmation of persisted curated data.
 - `Settings`: runtime metadata, quality metadata, and transformation count.
 
-## Engineering Discipline
-- CI gate: lint + format + tests + coverage (`>=70%`).
-- Streamlit Cloud preflight and deployment runbook in `docs/STREAMLIT_CLOUD.md`.
+## Engineering Controls
+- CI gate: lint, format, tests, and coverage (`>=70%`).
+- Streamlit Cloud preflight and runtime runbook in [STREAMLIT_CLOUD.md](STREAMLIT_CLOUD.md).
 - Structured logs with `trace_id` and per-page elapsed time.
-- Data provenance and manifest checks to prevent silent drift.
-- ADRs to document major architectural decisions.
+- Manifest and provenance checks to reduce silent data drift.
+- Smoke tests that render dashboard pages in CI.

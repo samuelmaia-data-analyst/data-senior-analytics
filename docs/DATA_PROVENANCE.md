@@ -1,34 +1,34 @@
-﻿# Data Provenance - Kaggle
+# Data Provenance - Kaggle
 
 ## Status
-- Fonte oficial do projeto: **Kaggle**
-- Dados brutos versionados no Git: **não**
-- Registro obrigatório antes de release: **sim**
-- Status atual da proveniência: **approved**
+- Official project source: **Kaggle**
+- Raw data versioned in Git: **no**
+- Mandatory source registration before release: **yes**
+- Current provenance status: **approved**
 
-## Registro da Fonte
-- Dataset (nome): `Credit Risk Benchmark Dataset`
-- URL de referência: `https://www.kaggle.com/datasets?datasetId=7083324`
+## Source Record
+- Dataset name: `Credit Risk Benchmark Dataset`
+- Reference URL: `https://www.kaggle.com/datasets?datasetId=7083324`
 - Kaggle Dataset ID: `7083324`
-- Kaggle Source ID (datasetVersion): `11324518`
-- Owner/Publicador: `not_available_in_notebook_metadata`
-- Licença: `not_available_in_notebook_metadata`
-- Data do snapshot identificado no notebook: `2025-05-01`
-- Data de registro no projeto: `2026-03-03`
-- Método de obtenção: `kaggle_notebook_datasource`
-- Notebook de evidência: `data/raw/classifica-o-de-inadimpl-ncia.ipynb`
+- Kaggle Source ID (`datasetVersion`): `11324518`
+- Owner/publisher: `not_available_in_notebook_metadata`
+- License: `not_available_in_notebook_metadata`
+- Snapshot date identified in the notebook: `2025-05-01`
+- Registration date in the project: `2026-03-03`
+- Acquisition method: `kaggle_notebook_datasource`
+- Evidence notebook: `data/raw/classifica-o-de-inadimpl-ncia.ipynb`
 
-## Observação de Rastreabilidade
-- Este registro foi extraído dos metadados internos do notebook Kaggle (`metadata.kaggle.dataSources`).
-- Quando disponível, substituir `owner` e `license` pelos valores oficiais da página pública do dataset.
+## Traceability Note
+- This record was extracted from the internal Kaggle notebook metadata (`metadata.kaggle.dataSources`).
+- When available, replace `owner` and `license` with the official values from the public dataset page.
 
-## Regras de Governança
-- Sempre registrar a URL oficial do Kaggle e a data de snapshot usada.
-- Não commitar arquivos brutos em `data/raw/`.
-- Dados de exemplo sintéticos (`*_exemplo.csv`) são apenas para demonstração local.
-- Qualquer relatório executivo deve citar o dataset e sua licença.
+## Governance Rules
+- Always register the official Kaggle URL and the snapshot date used.
+- Do not commit raw files under `data/raw/`.
+- Synthetic example files are for local demonstration only.
+- Any executive report must cite the dataset source and license.
 
-## Evidência de Reprodutibilidade
-- Configuração de fonte: [config/data_source.yaml](../config/data_source.yaml)
-- Script de validação de proveniência: [scripts/validate_data_provenance.py](../scripts/validate_data_provenance.py)
-- Script de geração sintética (opcional): [scripts/generate_sample_data.py](../scripts/generate_sample_data.py)
+## Reproducibility Evidence
+- Source configuration: [config/data_source.yaml](../config/data_source.yaml)
+- Provenance validation script: [scripts/validate_data_provenance.py](../scripts/validate_data_provenance.py)
+- Synthetic data generator (optional): [scripts/generate_sample_data.py](../scripts/generate_sample_data.py)

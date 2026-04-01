@@ -1,27 +1,27 @@
-﻿# Data Lineage and Reproducibility
+# Data Lineage and Reproducibility
 
 ## Purpose
-This document describes how data artifacts are tracked to ensure reproducibility and auditability.
+Document how data artifacts are tracked so analytical outputs can be reproduced and audited with confidence.
 
 ## Manifest Strategy
 - Manifest file: `docs/data_manifest.json`
-- Generation script: `scripts/generate_data_manifest.py`
+- Generator: `scripts/generate_data_manifest.py`
 - Scope: `data/sample/*` and `data/raw/*` tabular files
 - Tracked fields per file:
-  - Relative path
-  - File size in bytes
-  - Last modified timestamp (UTC)
+  - relative path
+  - file size in bytes
+  - last modified timestamp in UTC
   - SHA-256 checksum
-  - Optional shape (`rows`, `columns`) for CSV/XLSX
+  - optional shape metadata (`rows`, `columns`) for CSV/XLSX
 
 ## Operational Flow
-1. Update or add dataset files.
-2. Regenerate manifest:
+1. Add or update dataset files.
+2. Regenerate the manifest:
    - `python scripts/generate_data_manifest.py`
-3. Validate in CI/local:
+3. Validate locally or in CI:
    - `python scripts/generate_data_manifest.py --check`
 
 ## Why This Matters
 - Detects unintended data drift in versioned datasets.
-- Improves confidence in reproducing analytical outputs.
-- Provides clear lineage evidence for reviewers and technical leads.
+- Increases confidence in reproducibility for reviewers and technical leads.
+- Creates a lightweight lineage artifact without introducing heavy data platform dependencies.

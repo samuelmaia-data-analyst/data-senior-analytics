@@ -1,39 +1,40 @@
-﻿# Data Contract
+# Data Contract
 
 ## Objective
-Define expected schemas and quality rules across `raw`, `bronze`, `silver`, and `gold` layers so downstream dashboards and analyses are stable.
+Define the minimum guarantees expected across `raw`, `bronze`, `silver`, and `gold` layers so downstream analysis, persistence, and executive reporting remain stable.
 
-## Layer Contracts
+## Layer Guarantees
 
 ### Raw
 - Source: user-uploaded `.csv` or `.xlsx`.
-- Required properties:
+- Expectations:
   - File is readable.
   - Header row exists.
-  - At least 1 data row.
-- No strict column naming enforcement.
+  - At least one data row exists.
+- Rule:
+  - No strict naming normalization at this stage.
 
 ### Bronze
-- Purpose: preserve source fidelity after ingestion.
-- Required properties:
-  - Column names retained from source.
-  - Row count equal to Raw input.
-  - Metadata tracked (ingestion timestamp/source file).
+- Purpose: preserve source fidelity immediately after ingestion.
+- Expectations:
+  - Original column names are still recognizable.
+  - Row count matches the raw input.
+  - Ingestion metadata is traceable.
 
 ### Silver
-- Purpose: standardized dataset for analytics.
-- Required properties:
-  - Normalized snake_case column names.
-  - Duplicates removed (business key or full row).
-  - Missing values handled per strategy.
-  - Best-effort dtype normalization (numeric/date/categorical).
+- Purpose: provide a standardized dataset ready for analytical use.
+- Expectations:
+  - Column names normalized to `snake_case`.
+  - Duplicates removed by row or business key strategy.
+  - Missing values handled according to the configured strategy.
+  - Best-effort dtype normalization for numeric, datetime, and categorical fields.
 
 ### Gold
-- Purpose: dashboard-ready business outputs.
-- Minimum schema expected by contract tests:
-  - `metric_name` (string, non-null)
-  - `metric_value` (numeric, non-null)
-  - `segment` (string, non-null)
+- Purpose: provide dashboard-ready business outputs and stable downstream contracts.
+- Minimum schema required by tests:
+  - `metric_name` (`string`, non-null)
+  - `metric_value` (`numeric`, non-null)
+  - `segment` (`string`, non-null)
   - `reference_date` (datetime-like, non-null)
 - Quality rules:
   - `metric_name` + `segment` + `reference_date` must be unique.
@@ -41,5 +42,6 @@ Define expected schemas and quality rules across `raw`, `bronze`, `silver`, and 
   - Gold output must contain at least one row.
 
 ## Validation Strategy
-- Unit tests validate schema and quality constraints for Gold outputs.
-- CI blocks merges when output contract tests fail.
+- Unit tests validate Gold schema and quality constraints.
+- CI blocks merges when contract checks fail.
+- The contract is intentionally strict at the Gold layer and intentionally lighter upstream.
