@@ -17,6 +17,7 @@ The real problem is not just data visualization. The real problem is converting 
 This repository solves that through a layered approach:
 - raw intake via CSV/XLSX or demo datasets
 - automated curation with standardization, dtype inference, null handling, and deduplication
+- versioned scoring and action policy in `config/dashboard_policy.json`
 - executive consumption through KPI, quality readiness, trends, and priority actions
 - persistence of curated datasets into SQLite
 - engineering discipline with lint, tests, coverage, deploy preflight, and operational documentation
@@ -25,6 +26,7 @@ This repository solves that through a layered approach:
 - It translates technical data risk into business language: `Quality Score`, `Completeness`, `Priority actions`.
 - It treats Streamlit as a product and operations surface, not as a notebook with widgets.
 - It separates concerns across `dashboard/`, `src/analysis/`, `src/data/`, and `config/`.
+- It extracts curation into a reusable service in `src/app/curation_service.py`.
 - It keeps Streamlit Cloud deployment reproducible with a runbook and troubleshooting guidance.
 - It protects behavior with automated tests and CI gates.
 

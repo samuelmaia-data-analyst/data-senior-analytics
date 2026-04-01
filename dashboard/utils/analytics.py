@@ -2,8 +2,21 @@
 
 from __future__ import annotations
 
+import json
+from functools import lru_cache
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
+
+POLICY_PATH = Path(__file__).resolve().parents[2] / "config" / "dashboard_policy.json"
+
+
+@lru_cache(maxsize=1)
+def load_dashboard_policy() -> dict[str, object]:
+    """Load executive dashboard scoring policies from versioned config."""
+    with POLICY_PATH.open(encoding="utf-8") as policy_file:
+        return json.load(policy_file)
 
 
 def detect_column_types(df: pd.DataFrame) -> dict[str, list[str]]:
@@ -79,8 +92,11 @@ def interpret_correlation(corr: float) -> tuple[str, str]:
     return "Muito Fraca", "❌"
 
 
-def build_data_quality_summary(df: pd.DataFrame) -> dict[str, float | int | str]:
+def build_data_quality_summary(
+    df: pd.DataFrame, policy: dict[str, object] | None = None
+) -> dict[str, float | int | str]:
     """Build an executive-ready summary of dataset quality."""
+    quality_policy = (policy or load_dashboard_policy())["quality_score"]
     rows, columns = df.shape
     total_cells = max(1, rows * columns)
     missing_count = int(df.isna().sum().sum())
@@ -99,18 +115,23 @@ def build_data_quality_summary(df: pd.DataFrame) -> dict[str, float | int | str]
         min(
             100.0,
             100.0
-            - (missing_pct * 2.2)
-            - (duplicate_pct * 1.3)
-            - (8.0 if numeric_count == 0 else 0.0)
-            - (5.0 if rows < 20 else 0.0),
+            - (missing_pct * float(quality_policy["missing_weight"]))
+            - (duplicate_pct * float(quality_policy["duplicate_weight"]))
+            - (float(quality_policy["no_numeric_penalty"]) if numeric_count == 0 else 0.0)
+            - (
+                float(quality_policy["small_dataset_penalty"])
+                if rows < int(quality_policy["small_dataset_threshold"])
+                else 0.0
+            ),
         ),
     )
 
-    if score >= 90:
+    status_thresholds = quality_policy["status_thresholds"]
+    if score >= float(status_thresholds["Excellent"]):
         status = "Excellent"
-    elif score >= 75:
+    elif score >= float(status_thresholds["Good"]):
         status = "Good"
-    elif score >= 60:
+    elif score >= float(status_thresholds["Attention"]):
         status = "Attention"
     else:
         status = "Critical"
@@ -132,17 +153,20 @@ def build_data_quality_summary(df: pd.DataFrame) -> dict[str, float | int | str]
     }
 
 
-def build_priority_actions(summary: dict[str, float | int | str]) -> list[str]:
+def build_priority_actions(
+    summary: dict[str, float | int | str], policy: dict[str, object] | None = None
+) -> list[str]:
     """Translate quality metrics into concrete next actions."""
+    action_policy = (policy or load_dashboard_policy())["priority_actions"]
     actions: list[str] = []
 
-    if float(summary["missing_pct"]) > 5:
+    if float(summary["missing_pct"]) > float(action_policy["missing_pct_threshold"]):
         actions.append("Prioritize null handling before sharing executive insights.")
-    if float(summary["duplicate_pct"]) > 1:
+    if float(summary["duplicate_pct"]) > float(action_policy["duplicate_pct_threshold"]):
         actions.append("Review business keys and deduplication to avoid double counting.")
     if int(summary["numeric_columns"]) == 0:
         actions.append("Add numeric measures to unlock KPI, correlation, and trend analysis.")
-    if int(summary["rows"]) < 20:
+    if int(summary["rows"]) < int(action_policy["minimum_rows"]):
         actions.append("Increase sample size before making high-confidence decisions.")
     if not actions:
         actions.append("Dataset is ready for executive exploration and analytical persistence.")

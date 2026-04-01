@@ -1,0 +1,19 @@
+{
+  "quality_score": {
+    "missing_weight": 2.2,
+    "duplicate_weight": 1.3,
+    "no_numeric_penalty": 8.0,
+    "small_dataset_penalty": 5.0,
+    "small_dataset_threshold": 20,
+    "status_thresholds": {
+      "Excellent": 90,
+      "Good": 75,
+      "Attention": 60
+    }
+  },
+  "priority_actions": {
+    "missing_pct_threshold": 5.0,
+    "duplicate_pct_threshold": 1.0,
+    "minimum_rows": 20
+  }
+}

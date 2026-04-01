@@ -20,15 +20,11 @@ if str(ROOT_DIR) not in sys.path:
 
 from config.settings import Settings  # noqa: E402
 from dashboard.utils.analytics import (  # noqa: E402
-    build_data_quality_summary,
-    build_executive_snapshot,
-    build_priority_actions,
     summarize_correlation_pairs,
     summarize_transformation_log,
 )
-from src.analysis.exploratory import ExploratoryAnalyzer  # noqa: E402
+from src.app.curation_service import curate_dataset  # noqa: E402
 from src.data.sqlite_manager import SQLiteManager  # noqa: E402
-from src.data.transformer import DataTransformer  # noqa: E402
 from src.utils.observability import get_structured_logger, new_trace_id, timed_stage  # noqa: E402
 
 PAGE_OPTIONS = [
@@ -224,36 +220,19 @@ def format_compact_number(value: float | int | None) -> str:
     return f"{float(value):,.0f}"
 
 
-def prepare_dataset(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any], list[dict[str, Any]]]:
-    """Run a lightweight curation pipeline and produce profiling metadata."""
-    transformer = DataTransformer()
-    curated_df = transformer.clean_column_names(df)
-    curated_df = transformer.convert_dtypes(curated_df)
-    curated_df = transformer.handle_missing_values(curated_df, strategy="auto")
-    curated_df = transformer.remove_duplicates(curated_df)
-
-    analyzer = ExploratoryAnalyzer()
-    analysis = analyzer.analyze_dataframe(curated_df, df_name="active_dataset")
-    transform_log = transformer.get_transformation_log()
-
-    return curated_df, analysis, transform_log
-
-
 def apply_dataset_to_session(df: pd.DataFrame, data_name: str, data_source: str) -> None:
     """Persist raw data, curated data, and metadata in the active session."""
-    raw_df = df.copy()
-    curated_df, analysis, transform_log = prepare_dataset(raw_df)
-    quality_summary = build_data_quality_summary(curated_df)
-    priority_actions = build_priority_actions(quality_summary)
+    artifacts = curate_dataset(df)
 
-    st.session_state.raw_data = raw_df
-    st.session_state.data = curated_df
+    st.session_state.raw_data = artifacts.raw_df
+    st.session_state.data = artifacts.curated_df
     st.session_state.data_name = data_name
     st.session_state.data_source = data_source
-    st.session_state.analysis = analysis
-    st.session_state.transform_log = transform_log
-    st.session_state.quality_summary = quality_summary
-    st.session_state.priority_actions = priority_actions
+    st.session_state.analysis = artifacts.analysis
+    st.session_state.transform_log = artifacts.transform_log
+    st.session_state.quality_summary = artifacts.quality_summary
+    st.session_state.priority_actions = artifacts.priority_actions
+    st.session_state.executive_snapshot = artifacts.executive_snapshot
 
 
 def clear_dataset_state() -> None:
@@ -266,6 +245,7 @@ def clear_dataset_state() -> None:
         "transform_log",
         "quality_summary",
         "priority_actions",
+        "executive_snapshot",
     ):
         if key in st.session_state:
             del st.session_state[key]
@@ -281,6 +261,7 @@ def ensure_session_defaults() -> None:
         "transform_log": [],
         "quality_summary": None,
         "priority_actions": [],
+        "executive_snapshot": None,
         "selected_page": "Overview",
     }
     for key, value in defaults.items():
@@ -337,9 +318,9 @@ def render_home(
     quality_summary: dict[str, Any] | None,
     analysis: dict[str, Any] | None,
     priority_actions: list[str],
+    executive_snapshot: dict[str, Any] | None,
 ) -> None:
     st.subheader("Executive Summary")
-    executive_snapshot = build_executive_snapshot(df) if df is not None and not df.empty else None
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
@@ -855,6 +836,7 @@ def main() -> None:
     transform_log = st.session_state.transform_log
     quality_summary = st.session_state.quality_summary
     priority_actions = st.session_state.priority_actions
+    executive_snapshot = st.session_state.executive_snapshot
 
     APP_LOGGER.info(
         "app_start",
@@ -904,7 +886,9 @@ def main() -> None:
             st.rerun()
 
     page_handlers = {
-        "Overview": lambda: render_home(df, db, quality_summary, analysis, priority_actions),
+        "Overview": lambda: render_home(
+            df, db, quality_summary, analysis, priority_actions, executive_snapshot
+        ),
         "Upload": lambda: render_upload(db, quality_summary),
         "Data": lambda: render_data_preview(df, raw_df, transform_log),
         "EDA": lambda: render_eda(df, analysis, quality_summary),

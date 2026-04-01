@@ -6,10 +6,11 @@ The project follows a layered analytics architecture that separates business pre
 ## Layers
 - Presentation layer: `dashboard/app.py` renders the executive experience, KPI cards, EDA tabs, and persistence flows.
 - Dashboard analytics layer: `dashboard/utils/analytics.py` converts technical profiling into executive metrics such as quality score, priority actions, and board-ready snapshots.
+- Application service layer: `src/app/curation_service.py` orchestrates curation, profiling, scoring, and executive snapshot generation.
 - Domain analytics layer: `src/analysis/exploratory.py` produces descriptive statistics and automated insights.
 - Data curation layer: `src/data/transformer.py` standardizes columns, infers types, treats missing values, and removes duplicates.
 - Persistence layer: `src/data/sqlite_manager.py` stores curated datasets in SQLite for downstream querying.
-- Platform/config layer: `config/settings.py`, `.streamlit/`, and validation scripts define runtime paths, deployment guardrails, and governance checks.
+- Platform/config layer: `config/settings.py`, `config/dashboard_policy.json`, `.streamlit/`, and validation scripts define runtime paths, scoring policy, deployment guardrails, and governance checks.
 
 ## End-to-End Flow
 ```mermaid
@@ -29,17 +30,19 @@ flowchart LR
 sequenceDiagram
     participant U as User
     participant UI as Streamlit UI
+    participant AP as Curation Service
     participant TR as DataTransformer
     participant AN as ExploratoryAnalyzer
     participant AU as Dashboard Analytics Utils
     participant DB as SQLiteManager
 
     U->>UI: Load demo or upload CSV/XLSX
-    UI->>TR: Curate raw DataFrame
+    UI->>AP: Trigger curation workflow
+    AP->>TR: Curate raw DataFrame
     TR-->>UI: Clean, typed, deduplicated DataFrame
-    UI->>AN: Profile and analyze curated data
-    AN-->>UI: Stats and automated insights
-    UI->>AU: Build quality summary and executive snapshot
+    AP->>AN: Profile and analyze curated data
+    AN-->>AP: Stats and automated insights
+    AP->>AU: Build quality summary and executive snapshot
     AU-->>UI: KPI, quality score, priority actions
     UI->>DB: Persist curated output (optional)
     DB-->>UI: Queryable analytical tables

@@ -121,25 +121,44 @@ class DataTransformer:
         Converte tipos de dados automaticamente
         """
         df = df.copy()
+        conversion_stats = {
+            "datetime_converted": [],
+            "numeric_converted": [],
+            "datetime_failed": [],
+            "numeric_failed": [],
+        }
 
         for col in df.columns:
             # Tenta converter para datetime
             if df[col].dtype == "object":
                 try:
                     df[col] = pd.to_datetime(df[col], format="mixed")
+                    conversion_stats["datetime_converted"].append(col)
                     logger.debug(f"Coluna {col} convertida para datetime")
                     continue
-                except Exception:
-                    pass
+                except (ValueError, TypeError, OverflowError) as exc:
+                    conversion_stats["datetime_failed"].append({"column": col, "error": str(exc)})
 
                 # Tenta converter para numérico
                 try:
                     df[col] = pd.to_numeric(df[col])
+                    conversion_stats["numeric_converted"].append(col)
                     logger.debug(f"Coluna {col} convertida para numérico")
-                except Exception:
-                    pass
+                except (ValueError, TypeError) as exc:
+                    conversion_stats["numeric_failed"].append({"column": col, "error": str(exc)})
 
-        self._log_transformation("convert_dtypes", {"dtypes": df.dtypes.to_dict()})
+        if conversion_stats["datetime_failed"] or conversion_stats["numeric_failed"]:
+            logger.info(
+                "Resumo de inferencia de tipos: "
+                f"{len(conversion_stats['datetime_converted'])} datetime, "
+                f"{len(conversion_stats['numeric_converted'])} numericas, "
+                f"{len(conversion_stats['datetime_failed']) + len(conversion_stats['numeric_failed'])} falhas"
+            )
+
+        self._log_transformation(
+            "convert_dtypes",
+            {"dtypes": df.dtypes.to_dict(), "conversion_stats": conversion_stats},
+        )
 
         return df
 

@@ -17,6 +17,7 @@ O problema nao e apenas visualizar dados. O problema real e transformar arquivos
 Este repositorio resolve isso com uma abordagem em camadas:
 - entrada bruta via CSV/XLSX ou datasets demo
 - curadoria automatica com padronizacao, inferencia de tipos, tratamento de nulos e deduplicacao
+- politica versionada de scoring e acoes em `config/dashboard_policy.json`
 - leitura executiva com KPI, qualidade da base, tendencias e acoes prioritarias
 - persistencia do dataset curado em SQLite
 - disciplina de engenharia com lint, testes, cobertura, preflight de deploy e rastreabilidade
@@ -25,6 +26,7 @@ Este repositorio resolve isso com uma abordagem em camadas:
 - Traduz risco tecnico em linguagem de negocio: `Quality Score`, `Completeness`, `Priority actions`.
 - Trata Streamlit como camada de produto e operacao, nao como notebook com widgets.
 - Separa responsabilidades entre `dashboard/`, `src/analysis/`, `src/data/` e `config/`.
+- Extrai a curadoria para um servico reutilizavel em `src/app/curation_service.py`.
 - Mantem deploy reproduzivel em Streamlit Cloud com runbook e troubleshooting documentado.
 - Usa testes e gates de CI para proteger comportamento e contratos de saida.
 

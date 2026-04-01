@@ -62,6 +62,27 @@ def test_build_data_quality_summary_exposes_core_quality_metrics():
     assert summary["status"] in {"Excellent", "Good", "Attention", "Critical"}
 
 
+def test_build_data_quality_summary_can_use_policy_config():
+    df = pd.DataFrame({"valor": [1.0, None], "segmento": ["A", "A"]})
+
+    summary = build_data_quality_summary(
+        df,
+        policy={
+            "quality_score": {
+                "missing_weight": 1.0,
+                "duplicate_weight": 1.0,
+                "no_numeric_penalty": 0.0,
+                "small_dataset_penalty": 0.0,
+                "small_dataset_threshold": 10,
+                "status_thresholds": {"Excellent": 90, "Good": 70, "Attention": 50},
+            }
+        },
+    )
+
+    assert summary["quality_score"] == 75.0
+    assert summary["status"] == "Good"
+
+
 def test_build_priority_actions_flags_quality_risks():
     actions = build_priority_actions(
         {
