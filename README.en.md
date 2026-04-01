@@ -40,7 +40,7 @@ The dashboard is designed for scenarios where leadership needs fast answers to p
 ## What the dashboard delivers
 - `Overview`: decision memo with KPI, current risk, confidence, release posture, commercial concentration, and revenue trend.
 - `Upload`: ingestion with automated curation and immediate quality scoring.
-- `Data`: raw vs curated comparison, column profile, and transformation log.
+- `Data`: raw vs curated comparison, with masked previews when personal data is detected.
 - `EDA`: automated insights, statistics, correlation, and missing profile.
 - `Visualizations`: distribution, business mix, and trend analysis with less default reporting.
 - `Database`: operational verification of the curated dataset persisted in SQLite.
@@ -106,6 +106,7 @@ python -m streamlit run dashboard/app.py
 - Coverage gate at `>=70%`.
 - Streamlit Cloud preflight checks.
 - Encoding, provenance, and data manifest validation.
+- Basic governance and privacy controls for personal data in previews and persistence.
 - Deployment runtime aligned on `Python 3.11`.
 - Dashboard smoke tests as part of product-surface validation.
 
@@ -116,6 +117,7 @@ python -m streamlit run dashboard/app.py
 - `src/data/`: curation, ingestion, and persistence
 - `config/`: paths and runtime metadata
 - `docs/`: architecture, deployment, and governance
+- `docs/LGPD_GOVERNANCE.md`: practical privacy interpretation applied to the analytics workflow
 - `tests/`: automated behavior protection
 
 ## License

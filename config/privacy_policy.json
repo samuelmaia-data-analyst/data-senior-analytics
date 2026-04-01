@@ -1,0 +1,56 @@
+{
+  "direct_identifier_patterns": [
+    "cpf",
+    "cnpj",
+    "rg",
+    "passaporte",
+    "passport",
+    "email",
+    "e-mail",
+    "telefone",
+    "celular",
+    "phone",
+    "whatsapp",
+    "nome",
+    "name",
+    "endereco",
+    "address",
+    "cep",
+    "zip"
+  ],
+  "sensitive_patterns": [
+    "saude",
+    "health",
+    "diagnostico",
+    "doenca",
+    "biometr",
+    "genet",
+    "racial",
+    "etnia",
+    "relig",
+    "politic",
+    "sindicat",
+    "sexual"
+  ],
+  "quasi_identifier_patterns": [
+    "cliente",
+    "customer",
+    "usuario",
+    "user",
+    "nascimento",
+    "birth",
+    "idade",
+    "age",
+    "cidade",
+    "city",
+    "estado",
+    "state",
+    "region",
+    "regiao"
+  ],
+  "content_rules": {
+    "email_min_ratio": 0.6,
+    "cpf_min_ratio": 0.6,
+    "phone_min_ratio": 0.6
+  }
+}

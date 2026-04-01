@@ -39,7 +39,8 @@ python scripts/generate_data_manifest.py --check
 3. Confirm `Overview` shows decision risk, confidence, and release posture.
 4. Navigate through `Upload`, `Data`, `EDA`, `Visualizations`, `Database`, and `Settings`.
 5. Upload a CSV/XLSX and confirm the quality score updates.
-6. Save the curated dataset into SQLite and confirm it appears in `Database`.
+6. If personal data is detected, confirm previews are masked and persistence asks for acknowledgement.
+7. Save the curated dataset into SQLite and confirm it appears in `Database`.
 
 ## Troubleshooting
 - App still starts with `Python 3.14.x`:

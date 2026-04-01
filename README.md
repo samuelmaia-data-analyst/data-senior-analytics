@@ -40,7 +40,7 @@ O dashboard foi desenhado para cenários em que liderança precisa responder rap
 ## O que o dashboard entrega
 - `Overview`: memo de decisão com KPI, risco atual, confiança, release posture, concentração comercial e trend de receita.
 - `Upload`: ingestão com curadoria automática e score de qualidade imediatamente após a carga.
-- `Data`: visão lado a lado de bruto vs. curado, perfil de colunas e log do pipeline aplicado.
+- `Data`: visão lado a lado de bruto vs. curado, com mascaramento quando dados pessoais são detectados.
 - `EDA`: insights automatizados, estatísticas, correlação e perfil de valores ausentes.
 - `Visualizations`: distribuição, mistura de negócio e análise de tendência com leitura menos genérica.
 - `Database`: verificação operacional do dataset persistido no SQLite.
@@ -106,6 +106,7 @@ python -m streamlit run dashboard/app.py
 - Gate de cobertura em `>=70%`.
 - Preflight para Streamlit Cloud.
 - Checks de encoding, proveniência e manifesto de dados.
+- Controles básicos de governança e LGPD para dados pessoais em preview e persistência.
 - Runtime de deploy alinhado em `Python 3.11`.
 - Smoke test do dashboard como superfície de produto.
 
@@ -116,6 +117,7 @@ python -m streamlit run dashboard/app.py
 - `src/data/`: curadoria, ingestão e persistência
 - `config/`: paths e metadados de execução
 - `docs/`: arquitetura, deploy e governança
+- `docs/LGPD_GOVERNANCE.md`: interpretação prática de privacidade aplicada ao fluxo analítico
 - `tests/`: proteção automatizada de comportamento
 
 ## Licença

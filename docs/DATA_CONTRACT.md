@@ -13,6 +13,7 @@ Define the minimum guarantees expected across `raw`, `bronze`, `silver`, and `go
   - At least one data row exists.
 - Rule:
   - No strict naming normalization at this stage.
+  - Raw personal data must not be committed to the repository.
 
 ### Bronze
 - Purpose: preserve source fidelity immediately after ingestion.
@@ -28,6 +29,7 @@ Define the minimum guarantees expected across `raw`, `bronze`, `silver`, and `go
   - Duplicates removed by row or business key strategy.
   - Missing values handled according to the configured strategy.
   - Best-effort dtype normalization for numeric, datetime, and categorical fields.
+  - Privacy classification available for likely personal and sensitive columns.
 
 ### Gold
 - Purpose: provide dashboard-ready business outputs and stable downstream contracts.

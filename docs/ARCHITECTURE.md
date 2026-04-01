@@ -14,6 +14,7 @@ The project uses a layered analytics architecture to turn raw tabular inputs int
 - Presentation layer: `dashboard/app.py` renders the interface, KPI surfaces, EDA tabs, and persistence actions.
 - Dashboard analytics layer: `dashboard/utils/analytics.py` translates profiling into quality score, priority actions, business snapshot, governance snapshot, decision brief, and correlation summaries.
 - Application service layer: `src/app/curation_service.py` orchestrates curation, profiling, scoring, and business metadata generation.
+- Privacy guard layer: `src/app/privacy_guard.py` classifies personal data indicators, masks previews, and supports safer persistence defaults.
 - Domain analytics layer: `src/analysis/exploratory.py` generates descriptive statistics and automated insights.
 - Data curation layer: `src/data/transformer.py` standardizes column names, infers types, handles missing values, and removes duplicates.
 - Persistence layer: `src/data/sqlite_manager.py` stores curated outputs in SQLite for downstream inspection and reuse.
@@ -62,7 +63,7 @@ sequenceDiagram
 - `EDA`: automated insights, descriptive statistics, missing profile, and strongest correlations.
 - `Visualizations`: distribution analysis, business mix, and time trend exploration.
 - `Database`: operational confirmation of persisted curated data.
-- `Settings`: runtime metadata, governance metadata, quality metadata, and transformation count.
+- `Settings`: runtime metadata, governance metadata, privacy metadata, quality metadata, and transformation count.
 
 ## Engineering Controls
 - CI gate: lint, format, tests, and coverage (`>=70%`).

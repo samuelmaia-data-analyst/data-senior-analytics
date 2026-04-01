@@ -27,6 +27,7 @@ from dashboard.utils.analytics import (  # noqa: E402
     summarize_transformation_log,
 )
 from src.app.curation_service import curate_dataset  # noqa: E402
+from src.app.privacy_guard import mask_sensitive_dataframe  # noqa: E402
 from src.data.sqlite_manager import SQLiteManager  # noqa: E402
 from src.utils.observability import (  # noqa: E402
     get_structured_logger,
@@ -324,6 +325,8 @@ def apply_dataset_to_session(df: pd.DataFrame, data_name: str, data_source: str)
     st.session_state.quality_summary = artifacts.quality_summary
     st.session_state.priority_actions = artifacts.priority_actions
     st.session_state.business_snapshot = business_snapshot
+    st.session_state.privacy_snapshot = artifacts.privacy_snapshot
+    st.session_state.masked_data = artifacts.masked_curated_df
 
 
 def clear_dataset_state() -> None:
@@ -338,6 +341,8 @@ def clear_dataset_state() -> None:
         "quality_summary",
         "priority_actions",
         "business_snapshot",
+        "privacy_snapshot",
+        "masked_data",
     ):
         if key in st.session_state:
             del st.session_state[key]
@@ -355,6 +360,8 @@ def ensure_session_defaults() -> None:
         "quality_summary": None,
         "priority_actions": [],
         "business_snapshot": None,
+        "privacy_snapshot": None,
+        "masked_data": None,
         "selected_page": "Overview",
     }
     for key, value in defaults.items():
@@ -413,6 +420,7 @@ def render_home(
     priority_actions: list[str],
     business_snapshot: dict[str, Any] | None,
     governance_snapshot: dict[str, Any],
+    privacy_snapshot: dict[str, Any] | None,
 ) -> None:
     st.subheader("Summary")
     decision_brief = build_decision_brief(
@@ -498,6 +506,11 @@ def render_home(
             st.write(f"Loaded at: **{governance_snapshot['loaded_at'] or 'Unavailable'}**")
             st.write(f"Latest record: **{governance_snapshot['latest_record'] or 'Unavailable'}**")
             st.write(f"Transformations logged: **{governance_snapshot['transformation_count']}**")
+            if privacy_snapshot:
+                st.write(f"LGPD risk: **{privacy_snapshot['risk_level']}**")
+                st.write(
+                    f"Personal columns detected: **{len(privacy_snapshot['personal_columns'])}**"
+                )
 
     s1, s2, s3 = st.columns(3)
     if df is not None and not df.empty and quality_summary:
@@ -534,6 +547,15 @@ def render_home(
         st.markdown("### Decision Drivers")
         for driver in decision_brief["drivers"]:
             st.write(f"- {driver}")
+
+    if privacy_snapshot and privacy_snapshot["personal_data_detected"]:
+        st.markdown("### Privacy and Governance")
+        st.warning(
+            "The current dataset appears to contain personal data. Previews are masked and "
+            "persistence should follow minimization and lawful-basis review."
+        )
+        for control in privacy_snapshot["controls"]:
+            st.write(f"- {control}")
 
     if business_snapshot:
         st.markdown("### Business Briefing")
@@ -753,6 +775,8 @@ def render_upload(db: SQLiteManager, quality_summary: dict[str, Any] | None) -> 
     apply_dataset_to_session(df, uploaded.name, "upload")
     curated_df = st.session_state.data
     curated_summary = st.session_state.quality_summary
+    privacy_snapshot = st.session_state.privacy_snapshot
+    masked_df = st.session_state.masked_data
 
     k1, k2, k3, k4 = st.columns(4)
     with k1:
@@ -765,16 +789,39 @@ def render_upload(db: SQLiteManager, quality_summary: dict[str, Any] | None) -> 
         st.metric("Quality Score", f"{curated_summary['quality_score']:.0f}/100")
 
     st.success(f"File loaded and curated successfully: {uploaded.name}")
-    st.caption("Curated preview (first 50 rows)")
-    st.dataframe(curated_df.head(50), width="stretch")
+    if privacy_snapshot and privacy_snapshot["personal_data_detected"]:
+        st.caption("Masked curated preview (first 50 rows)")
+        st.dataframe(masked_df.head(50), width="stretch")
+        st.info(
+            f"LGPD control active. Personal columns detected: {', '.join(privacy_snapshot['personal_columns'])}."
+        )
+    else:
+        st.caption("Curated preview (first 50 rows)")
+        st.dataframe(curated_df.head(50), width="stretch")
 
     table_name = st.text_input(
         "SQLite table name",
         value=uploaded.name.replace(".", "_"),
         key="upload_table_name",
     )
+    persist_masked = st.checkbox(
+        "Persist masked dataset",
+        value=bool(privacy_snapshot and privacy_snapshot["safe_persistence_default"]),
+        key="persist_masked_dataset",
+    )
+    lgpd_ack = st.checkbox(
+        "I reviewed lawful basis, minimization, and retention for this dataset",
+        value=False,
+        key="lgpd_acknowledgement",
+    )
     if st.button("Save curated dataset to SQLite", key="save_sqlite_button", width="stretch"):
-        ok = db.df_to_sql(curated_df, table_name)
+        if privacy_snapshot and privacy_snapshot["personal_data_detected"] and not lgpd_ack:
+            st.error(
+                "LGPD safeguard: acknowledge lawful basis and minimization before persisting personal data."
+            )
+            return
+        dataset_to_persist = masked_df if persist_masked else curated_df
+        ok = db.df_to_sql(dataset_to_persist, table_name)
         if ok:
             st.success(f"Table saved: {table_name}")
         else:
@@ -785,6 +832,8 @@ def render_data_preview(
     df: pd.DataFrame | None,
     raw_df: pd.DataFrame | None,
     transform_log: list[dict[str, Any]],
+    privacy_snapshot: dict[str, Any] | None,
+    masked_df: pd.DataFrame | None,
 ) -> None:
     st.subheader("Data Preview")
     if df is None or df.empty:
@@ -796,13 +845,28 @@ def render_data_preview(
     )
 
     with tab1:
-        st.caption("Curated preview (first 200 rows)")
-        st.dataframe(df.head(200), width="stretch")
+        if (
+            privacy_snapshot
+            and privacy_snapshot["personal_data_detected"]
+            and masked_df is not None
+        ):
+            st.caption("Masked curated preview (first 200 rows)")
+            st.dataframe(masked_df.head(200), width="stretch")
+        else:
+            st.caption("Curated preview (first 200 rows)")
+            st.dataframe(df.head(200), width="stretch")
 
     with tab2:
         if raw_df is not None and not raw_df.empty:
-            st.caption("Raw preview (first 200 rows)")
-            st.dataframe(raw_df.head(200), width="stretch")
+            if privacy_snapshot and privacy_snapshot["personal_data_detected"]:
+                st.caption("Masked raw preview (first 200 rows)")
+                masked_raw = mask_sensitive_dataframe(
+                    raw_df.head(200), privacy_snapshot["personal_columns"]
+                )
+                st.dataframe(masked_raw, width="stretch")
+            else:
+                st.caption("Raw preview (first 200 rows)")
+                st.dataframe(raw_df.head(200), width="stretch")
         else:
             st.info("No raw dataset stored in the session.")
 
@@ -820,6 +884,10 @@ def render_data_preview(
     with tab4:
         for item in summarize_transformation_log(transform_log):
             st.write(f"- {item}")
+        if privacy_snapshot and privacy_snapshot["personal_data_detected"]:
+            st.write(
+                f"- Privacy controls active for columns: {', '.join(privacy_snapshot['personal_columns'])}."
+            )
 
 
 def render_eda(
@@ -968,7 +1036,7 @@ def render_charts(df: pd.DataFrame | None) -> None:
             st.info("Trend view requires `data` and `valor_total` columns.")
 
 
-def render_database(db: SQLiteManager) -> None:
+def render_database(db: SQLiteManager, privacy_snapshot: dict[str, Any] | None) -> None:
     st.subheader("SQLite Database")
     tables = db.list_tables()
     if not tables:
@@ -981,13 +1049,18 @@ def render_database(db: SQLiteManager) -> None:
 
     preview = db.sql_to_df(f"SELECT * FROM [{table}] LIMIT 500")
     st.caption("Table preview (up to 500 rows)")
-    st.dataframe(preview, width="stretch")
+    if privacy_snapshot and privacy_snapshot["personal_data_detected"]:
+        masked_preview = mask_sensitive_dataframe(preview, privacy_snapshot["personal_columns"])
+        st.dataframe(masked_preview, width="stretch")
+    else:
+        st.dataframe(preview, width="stretch")
 
 
 def render_settings(
     df: pd.DataFrame | None,
     quality_summary: dict[str, Any] | None,
     transform_log: list[dict[str, Any]],
+    privacy_snapshot: dict[str, Any] | None,
 ) -> None:
     st.subheader("Settings and Runtime")
     governance_snapshot = build_governance_snapshot(
@@ -1007,6 +1080,16 @@ def render_settings(
             "columns": int(df.shape[1]) if df is not None else 0,
             "quality_summary": quality_summary,
             "governance_snapshot": governance_snapshot,
+            "privacy_snapshot": (
+                {
+                    "risk_level": privacy_snapshot["risk_level"],
+                    "personal_columns": privacy_snapshot["personal_columns"],
+                    "sensitive_columns": privacy_snapshot["sensitive_columns"],
+                    "safe_persistence_default": privacy_snapshot["safe_persistence_default"],
+                }
+                if privacy_snapshot
+                else None
+            ),
             "sqlite_path": str(Settings.SQLITE_PATH),
             "transformations": len(transform_log),
         }
@@ -1030,6 +1113,8 @@ def main() -> None:
     quality_summary = st.session_state.quality_summary
     priority_actions = st.session_state.priority_actions
     business_snapshot = st.session_state.business_snapshot
+    privacy_snapshot = st.session_state.privacy_snapshot
+    masked_df = st.session_state.masked_data
     governance_snapshot = build_governance_snapshot(
         df=df,
         quality_summary=quality_summary,
@@ -1075,6 +1160,8 @@ def main() -> None:
                 st.caption(f"Status: **{quality_summary['status']}**")
             st.caption(f"Release: **{governance_snapshot['release_label']}**")
             st.caption(f"Trust: **{governance_snapshot['trust_label']}**")
+            if privacy_snapshot:
+                st.caption(f"LGPD risk: **{privacy_snapshot['risk_level']}**")
             if st.session_state.data_source == "sample_auto":
                 st.info("Default demo dataset loaded automatically.")
 
@@ -1097,13 +1184,14 @@ def main() -> None:
             priority_actions,
             business_snapshot,
             governance_snapshot,
+            privacy_snapshot,
         ),
         "Upload": lambda: render_upload(db, quality_summary),
-        "Data": lambda: render_data_preview(df, raw_df, transform_log),
+        "Data": lambda: render_data_preview(df, raw_df, transform_log, privacy_snapshot, masked_df),
         "EDA": lambda: render_eda(df, analysis, quality_summary),
         "Visualizations": lambda: render_charts(df),
-        "Database": lambda: render_database(db),
-        "Settings": lambda: render_settings(df, quality_summary, transform_log),
+        "Database": lambda: render_database(db, privacy_snapshot),
+        "Settings": lambda: render_settings(df, quality_summary, transform_log, privacy_snapshot),
     }
 
     try:

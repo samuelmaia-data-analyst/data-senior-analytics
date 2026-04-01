@@ -24,6 +24,8 @@ def test_curate_dataset_returns_curated_artifacts():
     assert artifacts.quality_summary["quality_score"] <= 100
     assert artifacts.business_snapshot["revenue"] == 350.0
     assert len(artifacts.priority_actions) >= 1
+    assert "categoria" in artifacts.masked_curated_df.columns
+    assert "risk_level" in artifacts.privacy_snapshot
 
 
 def test_curate_dataset_exposes_backward_compatible_snapshot_alias():

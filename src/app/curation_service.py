@@ -12,6 +12,7 @@ from dashboard.utils.analytics import (
     build_data_quality_summary,
     build_priority_actions,
 )
+from src.app.privacy_guard import build_privacy_snapshot, mask_sensitive_dataframe
 from src.analysis.exploratory import ExploratoryAnalyzer
 from src.data.transformer import DataTransformer
 
@@ -25,6 +26,8 @@ class CurationArtifacts:
     quality_summary: dict[str, Any]
     priority_actions: list[str]
     business_snapshot: dict[str, Any]
+    privacy_snapshot: dict[str, Any]
+    masked_curated_df: pd.DataFrame
 
     @property
     def executive_snapshot(self) -> dict[str, Any]:
@@ -47,6 +50,8 @@ def curate_dataset(df: pd.DataFrame) -> CurationArtifacts:
     quality_summary = build_data_quality_summary(curated_df)
     priority_actions = build_priority_actions(quality_summary)
     business_snapshot = build_business_snapshot(curated_df)
+    privacy_snapshot = build_privacy_snapshot(curated_df)
+    masked_curated_df = mask_sensitive_dataframe(curated_df, privacy_snapshot["personal_columns"])
 
     return CurationArtifacts(
         raw_df=raw_df,
@@ -56,4 +61,6 @@ def curate_dataset(df: pd.DataFrame) -> CurationArtifacts:
         quality_summary=quality_summary,
         priority_actions=priority_actions,
         business_snapshot=business_snapshot,
+        privacy_snapshot=privacy_snapshot,
+        masked_curated_df=masked_curated_df,
     )
