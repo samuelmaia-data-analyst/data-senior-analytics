@@ -26,6 +26,11 @@ class CurationArtifacts:
     priority_actions: list[str]
     business_snapshot: dict[str, Any]
 
+    @property
+    def executive_snapshot(self) -> dict[str, Any]:
+        """Backward-compatible alias for older session/runtime references."""
+        return self.business_snapshot
+
 
 def curate_dataset(df: pd.DataFrame) -> CurationArtifacts:
     """Run the end-to-end curation and profiling pipeline."""

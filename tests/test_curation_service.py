@@ -24,3 +24,19 @@ def test_curate_dataset_returns_curated_artifacts():
     assert artifacts.quality_summary["quality_score"] <= 100
     assert artifacts.business_snapshot["revenue"] == 350.0
     assert len(artifacts.priority_actions) >= 1
+
+
+def test_curate_dataset_exposes_backward_compatible_snapshot_alias():
+    raw_df = pd.DataFrame(
+        {
+            "Categoria": ["A"],
+            "Regiao": ["Sul"],
+            "Cliente ID": [10],
+            "Valor Total": [100.0],
+            "Quantidade": [1],
+        }
+    )
+
+    artifacts = curate_dataset(raw_df)
+
+    assert artifacts.executive_snapshot == artifacts.business_snapshot

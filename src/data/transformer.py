@@ -34,7 +34,8 @@ class DataTransformer:
         df.columns = [clean_name(col) for col in df.columns]
 
         self._log_transformation(
-            "clean_column_names", {"original": original_columns, "new": df.columns.tolist()}
+            "clean_column_names",
+            {"original": original_columns, "new": df.columns.tolist()},
         )
 
         logger.debug("Nomes de colunas padronizados")
@@ -61,32 +62,33 @@ class DataTransformer:
 
         elif strategy == "fill_mean":
             for col in df.select_dtypes(include=[np.number]).columns:
-                df[col].fillna(df[col].mean(), inplace=True)
+                df[col] = df[col].fillna(df[col].mean())
             logger.info("Valores faltantes preenchidos com média")
 
         elif strategy == "fill_median":
             for col in df.select_dtypes(include=[np.number]).columns:
-                df[col].fillna(df[col].median(), inplace=True)
+                df[col] = df[col].fillna(df[col].median())
             logger.info("Valores faltantes preenchidos com mediana")
 
         elif strategy == "fill_mode":
             for col in df.columns:
                 if df[col].dtype == "object":
-                    df[col].fillna(
-                        df[col].mode()[0] if not df[col].mode().empty else "Unknown", inplace=True
+                    fill_value = (
+                        df[col].mode()[0] if not df[col].mode().empty else "Unknown"
                     )
+                    df[col] = df[col].fillna(fill_value)
             logger.info("Valores faltantes preenchidos com moda")
 
         elif strategy == "auto":
             for col in df.columns:
                 if df[col].isnull().sum() > 0:
                     if df[col].dtype in ["int64", "float64"]:
-                        df[col].fillna(df[col].median(), inplace=True)
+                        df[col] = df[col].fillna(df[col].median())
                     else:
-                        df[col].fillna(
-                            df[col].mode()[0] if not df[col].mode().empty else "Unknown",
-                            inplace=True,
+                        fill_value = (
+                            df[col].mode()[0] if not df[col].mode().empty else "Unknown"
                         )
+                        df[col] = df[col].fillna(fill_value)
             logger.info("Valores faltantes tratados automaticamente")
 
         missing_after = df.isnull().sum().sum()
@@ -137,7 +139,9 @@ class DataTransformer:
                     logger.debug(f"Coluna {col} convertida para datetime")
                     continue
                 except (ValueError, TypeError, OverflowError) as exc:
-                    conversion_stats["datetime_failed"].append({"column": col, "error": str(exc)})
+                    conversion_stats["datetime_failed"].append(
+                        {"column": col, "error": str(exc)}
+                    )
 
                 # Tenta converter para numérico
                 try:
@@ -145,7 +149,9 @@ class DataTransformer:
                     conversion_stats["numeric_converted"].append(col)
                     logger.debug(f"Coluna {col} convertida para numérico")
                 except (ValueError, TypeError) as exc:
-                    conversion_stats["numeric_failed"].append({"column": col, "error": str(exc)})
+                    conversion_stats["numeric_failed"].append(
+                        {"column": col, "error": str(exc)}
+                    )
 
         if conversion_stats["datetime_failed"] or conversion_stats["numeric_failed"]:
             logger.info(
