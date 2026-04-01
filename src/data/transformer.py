@@ -126,17 +126,17 @@ class DataTransformer:
             # Tenta converter para datetime
             if df[col].dtype == "object":
                 try:
-                    df[col] = pd.to_datetime(df[col])
+                    df[col] = pd.to_datetime(df[col], format="mixed")
                     logger.debug(f"Coluna {col} convertida para datetime")
                     continue
-                except:
+                except Exception:
                     pass
 
                 # Tenta converter para numérico
                 try:
                     df[col] = pd.to_numeric(df[col])
                     logger.debug(f"Coluna {col} convertida para numérico")
-                except:
+                except Exception:
                     pass
 
         self._log_transformation("convert_dtypes", {"dtypes": df.dtypes.to_dict()})

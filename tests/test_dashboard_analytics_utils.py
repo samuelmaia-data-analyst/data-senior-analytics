@@ -1,9 +1,12 @@
 import pandas as pd
 
 from dashboard.utils.analytics import (
+    build_data_quality_summary,
+    build_priority_actions,
     detect_column_types,
     get_basic_stats,
     interpret_correlation,
+    summarize_transformation_log,
 )
 
 
@@ -36,3 +39,57 @@ def test_interpret_correlation_maps_strength_and_symbol():
     assert interpret_correlation(0.95)[0] == "Muito Forte"
     assert interpret_correlation(0.6)[0] == "Moderada"
     assert interpret_correlation(0.1)[0] == "Muito Fraca"
+
+
+def test_build_data_quality_summary_exposes_core_quality_metrics():
+    df = pd.DataFrame(
+        {
+            "id": [1, 2, 2],
+            "valor": [10.0, None, None],
+            "segmento": ["A", "B", "B"],
+        }
+    )
+
+    summary = build_data_quality_summary(df)
+
+    assert summary["rows"] == 3
+    assert summary["columns"] == 3
+    assert summary["missing_count"] == 2
+    assert summary["duplicate_count"] == 1
+    assert summary["quality_score"] < 100
+    assert summary["status"] in {"Excellent", "Good", "Attention", "Critical"}
+
+
+def test_build_priority_actions_flags_quality_risks():
+    actions = build_priority_actions(
+        {
+            "missing_pct": 10.0,
+            "duplicate_pct": 3.0,
+            "numeric_columns": 0,
+            "rows": 10,
+        }
+    )
+
+    assert len(actions) == 4
+    assert any("null" in action.lower() for action in actions)
+    assert any("deduplication" in action.lower() for action in actions)
+
+
+def test_summarize_transformation_log_generates_readable_messages():
+    summary = summarize_transformation_log(
+        [
+            {
+                "operation": "clean_column_names",
+                "details": {"original": ["Client ID", "Sale Value"], "new": ["client_id", "sale_value"]},
+            },
+            {
+                "operation": "handle_missing_values",
+                "details": {"missing_before": 8, "missing_after": 0},
+            },
+            {"operation": "remove_duplicates", "details": {"removed": 3}},
+        ]
+    )
+
+    assert any("Column standardization" in item for item in summary)
+    assert any("Missing values reduced" in item for item in summary)
+    assert any("Duplicate removal" in item for item in summary)
