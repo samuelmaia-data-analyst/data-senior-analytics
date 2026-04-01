@@ -18,7 +18,7 @@ Este repositório resolve isso com uma abordagem em camadas:
 - entrada bruta via CSV/XLSX ou datasets demo
 - curadoria automática com padronização, inferência de tipos, tratamento de nulos e deduplicação
 - política versionada de scoring e ações em `config/dashboard_policy.json`
-- leitura executiva com KPI, qualidade da base, tendências e ações prioritárias
+- leitura de negócio com KPI, qualidade da base, tendências e ações prioritárias
 - persistência do dataset curado em SQLite
 - disciplina de engenharia com lint, testes, cobertura, preflight de deploy e rastreabilidade
 
@@ -31,7 +31,7 @@ Este repositório resolve isso com uma abordagem em camadas:
 - Usa testes e gates de CI para proteger comportamento e contratos de saída.
 
 ## O que o dashboard entrega
-- `Overview`: resumo executivo com KPI comerciais, top category, top region, trend de receita e status de qualidade.
+- `Overview`: resumo com KPI comerciais, top category, top region, trend de receita e status de qualidade.
 - `Upload`: ingestão com curadoria automática e score de qualidade imediatamente após a carga.
 - `Data`: visão lado a lado de bruto vs. curado, perfil de colunas e log do pipeline aplicado.
 - `EDA`: insights automatizados, estatísticas, correlação e perfil de valores ausentes.
@@ -43,7 +43,7 @@ Este repositório resolve isso com uma abordagem em camadas:
 1. O usuário carrega um CSV/XLSX ou usa um dataset demo.
 2. O app aplica `DataTransformer` para gerar uma versão curada.
 3. `ExploratoryAnalyzer` produz estatísticas e insights automatizados.
-4. `dashboard/utils/analytics.py` converte esse profiling em uma narrativa executiva.
+4. `dashboard/utils/analytics.py` converte esse profiling em uma narrativa orientada à decisão.
 5. O usuário pode persistir a saída curada em SQLite.
 
 ## Decisões de Arquitetura
@@ -102,7 +102,7 @@ python -m streamlit run dashboard/app.py
 - Runtime de deploy alinhado em `Python 3.11`.
 
 ## Estrutura do repositório
-- `dashboard/`: interface Streamlit e utilitários executivos
+- `dashboard/`: interface Streamlit e utilitários de produto
 - `src/analysis/`: análise exploratória automatizada
 - `src/data/`: curadoria, ingestão e persistência
 - `config/`: paths e metadados de execução

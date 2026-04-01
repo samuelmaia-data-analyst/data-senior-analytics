@@ -18,7 +18,7 @@ This repository solves that through a layered approach:
 - raw intake via CSV/XLSX or demo datasets
 - automated curation with standardization, dtype inference, null handling, and deduplication
 - versioned scoring and action policy in `config/dashboard_policy.json`
-- executive consumption through KPI, quality readiness, trends, and priority actions
+- business-facing consumption through KPI, quality readiness, trends, and priority actions
 - persistence of curated datasets into SQLite
 - engineering discipline with lint, tests, coverage, deploy preflight, and operational documentation
 
@@ -31,7 +31,7 @@ This repository solves that through a layered approach:
 - It protects behavior with automated tests and CI gates.
 
 ## What the dashboard delivers
-- `Overview`: executive briefing with commercial KPI, top category, top region, revenue trend, and quality status.
+- `Overview`: summary view with commercial KPI, top category, top region, revenue trend, and quality status.
 - `Upload`: ingestion with automated curation and immediate quality scoring.
 - `Data`: raw vs curated comparison, column profile, and transformation log.
 - `EDA`: automated insights, statistics, correlation, and missing profile.
@@ -43,7 +43,7 @@ This repository solves that through a layered approach:
 1. The user uploads CSV/XLSX or loads a demo dataset.
 2. The app applies `DataTransformer` to build a curated version.
 3. `ExploratoryAnalyzer` produces statistics and automated insights.
-4. `dashboard/utils/analytics.py` converts profiling into an executive narrative.
+4. `dashboard/utils/analytics.py` converts profiling into a decision-oriented narrative.
 5. The user can persist the curated dataset into SQLite.
 
 ## Architecture Decisions
@@ -72,7 +72,7 @@ Related documentation:
 ![Dashboard Walkthrough](assets/images/dashboard-walkthrough.gif)
 
 ## Stack
-- `streamlit` for the executive experience
+- `streamlit` for the decision-oriented product experience
 - `pandas` and `numpy` for transformation and profiling
 - `plotly` for analytical visualization
 - `sqlite3` via `SQLiteManager` for persistence
@@ -102,7 +102,7 @@ python -m streamlit run dashboard/app.py
 - Deployment runtime aligned on `Python 3.11`.
 
 ## Repository structure
-- `dashboard/`: Streamlit interface and executive utilities
+- `dashboard/`: Streamlit interface and product utilities
 - `src/analysis/`: automated exploratory analysis
 - `src/data/`: curation, ingestion, and persistence
 - `config/`: paths and runtime metadata

@@ -1,4 +1,4 @@
-"""Executive Streamlit dashboard with a curated analytics workflow."""
+"""Streamlit dashboard with a curated analytics workflow."""
 
 from __future__ import annotations
 
@@ -279,7 +279,7 @@ def render_header(df: pd.DataFrame | None, quality_summary: dict[str, Any] | Non
         """
         <div class="hero">
             <h1 class="hero-title">Data Senior Analytics</h1>
-            <p class="hero-subtitle">Executive dashboard for diagnostics, curation, exploration, and decision support.</p>
+            <p class="hero-subtitle">Dashboard for diagnostics, curation, exploration, and decision support.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -287,7 +287,7 @@ def render_header(df: pd.DataFrame | None, quality_summary: dict[str, Any] | Non
 
     c1, c2, c3, c4 = st.columns([1, 1, 2, 1])
     with c1:
-        st.metric("Environment", "Executive")
+        st.metric("Environment", "Production")
     with c2:
         st.metric("Build", get_build_id())
     with c3:
@@ -305,7 +305,7 @@ def render_header(df: pd.DataFrame | None, quality_summary: dict[str, Any] | Non
             <span class="exec-chip">Business-ready analytics</span>
             <span class="exec-chip">Automated curation pipeline</span>
             <span class="exec-chip">Data governance by design</span>
-            <span class="exec-chip">Executive decision support</span>
+            <span class="exec-chip">Decision-ready reporting</span>
         </div>
         """,
         unsafe_allow_html=True,
@@ -320,7 +320,7 @@ def render_home(
     priority_actions: list[str],
     executive_snapshot: dict[str, Any] | None,
 ) -> None:
-    st.subheader("Executive Summary")
+    st.subheader("Summary")
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
@@ -381,7 +381,7 @@ def render_home(
             priority_actions[0] if priority_actions else "Persist curated outputs in SQLite."
         )
     else:
-        insight_msg = "No active dataset to generate executive insights."
+        insight_msg = "No active dataset to generate decision-ready insights."
         risk_msg = "Risk cannot be estimated without loaded data."
         action_msg = "Start with the Upload page and validate minimum data quality."
 
@@ -399,7 +399,7 @@ def render_home(
             st.write(action_msg)
 
     if executive_snapshot:
-        st.markdown("### Board Briefing")
+        st.markdown("### Business Briefing")
         b1, b2, b3 = st.columns(3)
         with b1:
             st.markdown(
@@ -437,7 +437,7 @@ def render_home(
                     <h3 class="board-title">{quality_summary['status'] if quality_summary else 'No data'}</h3>
                     <p class="board-copy">
                         The current quality score is {quality_summary['quality_score']:.0f}/100.
-                        This is the release signal for whether the dataset is ready for executive consumption.
+                        This is the release signal for whether the dataset is ready for business consumption.
                     </p>
                 </div>
                 """,
@@ -471,7 +471,7 @@ def render_home(
         st.caption("Production Readiness")
         st.progress(90)
     with m3:
-        st.caption("Executive Clarity")
+        st.caption("Decision Clarity")
         st.progress(92)
 
     if analysis:
