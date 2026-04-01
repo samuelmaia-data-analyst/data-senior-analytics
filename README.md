@@ -102,7 +102,8 @@ python -m streamlit run dashboard/app.py
 - Runtime de deploy alinhado em `Python 3.11`.
 
 ## Estrutura do repositório
-- `dashboard/`: interface Streamlit e utilitários de produto
+- `dashboard/`: interface Streamlit e composição da experiência do usuário
+- `src/app/`: serviços de aplicação e orquestração do fluxo curado
 - `src/analysis/`: análise exploratória automatizada
 - `src/data/`: curadoria, ingestão e persistência
 - `config/`: paths e metadados de execução
