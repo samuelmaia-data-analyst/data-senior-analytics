@@ -225,9 +225,7 @@ def format_compact_number(value: float | int | None) -> str:
     return f"{float(value):,.0f}"
 
 
-def apply_dataset_to_session(
-    df: pd.DataFrame, data_name: str, data_source: str
-) -> None:
+def apply_dataset_to_session(df: pd.DataFrame, data_name: str, data_source: str) -> None:
     """Persist raw data, curated data, and metadata in the active session."""
     artifacts = curate_dataset(df)
     business_snapshot = getattr(artifacts, "business_snapshot", None)
@@ -286,9 +284,7 @@ def ensure_session_defaults() -> None:
             apply_dataset_to_session(demo_df, "default_demo.csv", "sample_auto")
 
 
-def render_header(
-    df: pd.DataFrame | None, quality_summary: dict[str, Any] | None
-) -> None:
+def render_header(df: pd.DataFrame | None, quality_summary: dict[str, Any] | None) -> None:
     st.markdown(
         """
         <div class="hero">
@@ -352,53 +348,35 @@ def render_home(
         with k1:
             st.metric("Revenue", format_currency(business_snapshot["revenue"]))
         with k2:
-            st.metric(
-                "Average ticket", format_currency(business_snapshot["avg_ticket"])
-            )
+            st.metric("Average ticket", format_currency(business_snapshot["avg_ticket"]))
         with k3:
             st.metric(
                 "Unique clients",
                 format_compact_number(business_snapshot["unique_clients"]),
             )
         with k4:
-            st.metric(
-                "Items sold", format_compact_number(business_snapshot["items_sold"])
-            )
+            st.metric("Items sold", format_compact_number(business_snapshot["items_sold"]))
 
     left, right = st.columns(2)
     with left:
         with st.container(border=True):
-            st.markdown(
-                '<span class="exec-pill">Direction</span>', unsafe_allow_html=True
-            )
-            st.markdown(
-                '<div class="exec-card-title">Objective</div>', unsafe_allow_html=True
-            )
-            st.write(
-                "Turn tabular data into actionable insights with governed, curated outputs."
-            )
-            st.markdown(
-                '<div class="exec-card-title">Value</div>', unsafe_allow_html=True
-            )
+            st.markdown('<span class="exec-pill">Direction</span>', unsafe_allow_html=True)
+            st.markdown('<div class="exec-card-title">Objective</div>', unsafe_allow_html=True)
+            st.write("Turn tabular data into actionable insights with governed, curated outputs.")
+            st.markdown('<div class="exec-card-title">Value</div>', unsafe_allow_html=True)
             st.write(
                 "Upload raw files, standardize them automatically, and expose decision-ready metrics."
             )
 
     with right:
         with st.container(border=True):
-            st.markdown(
-                '<span class="exec-pill">Data context</span>', unsafe_allow_html=True
-            )
-            st.markdown(
-                '<div class="exec-card-title">Data Status</div>', unsafe_allow_html=True
-            )
+            st.markdown('<span class="exec-pill">Data context</span>', unsafe_allow_html=True)
+            st.markdown('<div class="exec-card-title">Data Status</div>', unsafe_allow_html=True)
             if df is not None and not df.empty and quality_summary:
                 st.write(f"Dataset: **{st.session_state.data_name}**")
                 st.write(f"Curated rows: **{quality_summary['rows']:,}**")
                 st.write(f"Columns: **{quality_summary['columns']}**")
-                st.write(
-                    f"Completeness: **{quality_summary['completeness_pct']:.2f}%**"
-                )
+                st.write(f"Completeness: **{quality_summary['completeness_pct']:.2f}%**")
             else:
                 st.info("No dataset loaded.")
 
@@ -413,9 +391,7 @@ def render_home(
             f"Duplicates: {quality_summary['duplicate_pct']:.2f}%."
         )
         action_msg = (
-            priority_actions[0]
-            if priority_actions
-            else "Persist curated outputs in SQLite."
+            priority_actions[0] if priority_actions else "Persist curated outputs in SQLite."
         )
     else:
         insight_msg = "No active dataset to generate decision-ready insights."
@@ -424,9 +400,7 @@ def render_home(
 
     with s1:
         with st.container(border=True):
-            st.markdown(
-                '<span class="exec-pill">Insight</span>', unsafe_allow_html=True
-            )
+            st.markdown('<span class="exec-pill">Insight</span>', unsafe_allow_html=True)
             st.write(insight_msg)
     with s2:
         with st.container(border=True):
@@ -488,15 +462,9 @@ def render_home(
     with d1:
         with st.container(border=True):
             st.markdown("#### Product Value")
-            st.write(
-                "- Smart curation standardizes names, types, nulls, and duplicates."
-            )
-            st.write(
-                "- Quality scoring translates technical data issues into business risk."
-            )
-            st.write(
-                "- EDA is connected to a reusable profiling layer, not isolated charts."
-            )
+            st.write("- Smart curation standardizes names, types, nulls, and duplicates.")
+            st.write("- Quality scoring translates technical data issues into business risk.")
+            st.write("- EDA is connected to a reusable profiling layer, not isolated charts.")
     with d2:
         with st.container(border=True):
             st.markdown("#### Engineering Signals")
@@ -576,9 +544,7 @@ def render_upload(db: SQLiteManager, quality_summary: dict[str, Any] | None) -> 
                 st.success("Loaded and curated default_demo.csv.")
                 st.rerun()
     with demo_col_2:
-        if st.button(
-            "Load large demo (240 rows)", key="load_large_demo_button", width="stretch"
-        ):
+        if st.button("Load large demo (240 rows)", key="load_large_demo_button", width="stretch"):
             df_large = load_large_demo_data()
             if df_large.empty:
                 st.error("sample_large.csv not found in data/sample.")
@@ -653,9 +619,7 @@ def render_upload(db: SQLiteManager, quality_summary: dict[str, Any] | None) -> 
         value=uploaded.name.replace(".", "_"),
         key="upload_table_name",
     )
-    if st.button(
-        "Save curated dataset to SQLite", key="save_sqlite_button", width="stretch"
-    ):
+    if st.button("Save curated dataset to SQLite", key="save_sqlite_button", width="stretch"):
         ok = db.df_to_sql(curated_df, table_name)
         if ok:
             st.success(f"Table saved: {table_name}")
@@ -747,9 +711,7 @@ def render_eda(
     with tab_corr:
         if numeric.shape[1] > 1:
             corr = numeric.corr(numeric_only=True)
-            fig = px.imshow(
-                corr, text_auto=True, aspect="auto", title="Correlation Matrix"
-            )
+            fig = px.imshow(corr, text_auto=True, aspect="auto", title="Correlation Matrix")
             st.plotly_chart(fig, width="stretch")
             strongest_pairs = summarize_correlation_pairs(df)
             if not strongest_pairs.empty:
@@ -786,9 +748,7 @@ def render_charts(df: pd.DataFrame | None) -> None:
 
     with tabs[0]:
         if numeric_cols:
-            col = st.selectbox(
-                "Numeric variable", numeric_cols, key="chart_numeric_variable"
-            )
+            col = st.selectbox("Numeric variable", numeric_cols, key="chart_numeric_variable")
             fig = px.histogram(df, x=col, nbins=30, title=f"Distribution: {col}")
             st.plotly_chart(fig, width="stretch")
         else:
@@ -812,9 +772,7 @@ def render_charts(df: pd.DataFrame | None) -> None:
                 .reset_index()
                 .sort_values(val, ascending=False)
             )
-            fig = px.bar(
-                grouped.head(15), x=cat, y=val, title=f"Average {val} by {cat}"
-            )
+            fig = px.bar(grouped.head(15), x=cat, y=val, title=f"Average {val} by {cat}")
             st.plotly_chart(fig, width="stretch")
         else:
             st.info("Category and numeric columns are required.")
@@ -903,9 +861,7 @@ def main() -> None:
             "data_name": st.session_state.data_name,
             "rows": int(df.shape[0]) if df is not None else 0,
             "columns": int(df.shape[1]) if df is not None else 0,
-            "quality_score": (
-                quality_summary["quality_score"] if quality_summary else None
-            ),
+            "quality_score": (quality_summary["quality_score"] if quality_summary else None),
         },
     )
 
@@ -929,9 +885,7 @@ def main() -> None:
             if raw_df is not None:
                 st.caption(f"Raw rows: {raw_df.shape[0]:,}")
             if quality_summary:
-                st.caption(
-                    f"Quality score: **{quality_summary['quality_score']:.0f}/100**"
-                )
+                st.caption(f"Quality score: **{quality_summary['quality_score']:.0f}/100**")
                 st.caption(f"Status: **{quality_summary['status']}**")
             if st.session_state.data_source == "sample_auto":
                 st.info("Default demo dataset loaded automatically.")

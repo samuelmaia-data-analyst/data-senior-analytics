@@ -73,9 +73,7 @@ class DataTransformer:
         elif strategy == "fill_mode":
             for col in df.columns:
                 if df[col].dtype == "object":
-                    fill_value = (
-                        df[col].mode()[0] if not df[col].mode().empty else "Unknown"
-                    )
+                    fill_value = df[col].mode()[0] if not df[col].mode().empty else "Unknown"
                     df[col] = df[col].fillna(fill_value)
             logger.info("Valores faltantes preenchidos com moda")
 
@@ -85,9 +83,7 @@ class DataTransformer:
                     if df[col].dtype in ["int64", "float64"]:
                         df[col] = df[col].fillna(df[col].median())
                     else:
-                        fill_value = (
-                            df[col].mode()[0] if not df[col].mode().empty else "Unknown"
-                        )
+                        fill_value = df[col].mode()[0] if not df[col].mode().empty else "Unknown"
                         df[col] = df[col].fillna(fill_value)
             logger.info("Valores faltantes tratados automaticamente")
 
@@ -139,9 +135,7 @@ class DataTransformer:
                     logger.debug(f"Coluna {col} convertida para datetime")
                     continue
                 except (ValueError, TypeError, OverflowError) as exc:
-                    conversion_stats["datetime_failed"].append(
-                        {"column": col, "error": str(exc)}
-                    )
+                    conversion_stats["datetime_failed"].append({"column": col, "error": str(exc)})
 
                 # Tenta converter para numérico
                 try:
@@ -149,9 +143,7 @@ class DataTransformer:
                     conversion_stats["numeric_converted"].append(col)
                     logger.debug(f"Coluna {col} convertida para numérico")
                 except (ValueError, TypeError) as exc:
-                    conversion_stats["numeric_failed"].append(
-                        {"column": col, "error": str(exc)}
-                    )
+                    conversion_stats["numeric_failed"].append({"column": col, "error": str(exc)})
 
         if conversion_stats["datetime_failed"] or conversion_stats["numeric_failed"]:
             logger.info(
