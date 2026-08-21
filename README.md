@@ -1,100 +1,95 @@
 # Data Analytics Workflow
 
-[English version](README.en.md)
+Projeto de portfólio para transformar arquivos tabulares em um fluxo analítico prático, com ingestão, limpeza, qualidade, visualização e persistência local.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/samuelmaia-analytics/data-senior-analytics/ci.yml?branch=main&label=CI)](https://github.com/samuelmaia-analytics/data-senior-analytics/actions/workflows/ci.yml)
-[![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-Live_App-FF4B4B?logo=streamlit&logoColor=white)](https://data-analytics-sr.streamlit.app)
-[![License: MIT](https://img.shields.io/badge/License-MIT-0f172a.svg)](LICENSE)
+**Demo:** https://data-analytics-sr.streamlit.app
 
-Projeto de portfólio para transformar arquivos tabulares em um fluxo analítico prático: ingestão, limpeza, score de qualidade, visualização e persistência em SQLite.
+## O problema
 
-Demo online: https://data-analytics-sr.streamlit.app
+Equipes recebem planilhas com estruturas diferentes e precisam responder rapidamente:
 
-Nota: o nome público do repositório pode ser alterado futuramente para refletir melhor o posicionamento atual do projeto.
+- O dado está confiável para análise?
+- Quais são os principais sinais de receita e concentração?
+- Onde existem problemas de completude ou duplicidade?
+- Qual informação pode ser compartilhada com segurança?
 
-## Resumo do projeto
-Este app foi construído para mostrar uma rotina analítica completa com foco em valor de negócio, documentação e controles básicos de qualidade e governança.
+## A solução
 
-## Problema de negócio
-Equipes de negócio recebem planilhas com estruturas diferentes e precisam responder rápido:
-- o dado está confiável para análise?
-- onde estão os principais sinais de receita e concentração?
-- qual ação priorizar antes de compartilhar resultados?
+```text
+CSV / XLSX
+ → ingestão
+ → limpeza e padronização
+ → Quality Score
+ → análise exploratória
+ → KPIs e visualizações
+ → persistência SQLite
+ → Streamlit
+```
 
-## Solução proposta
-O projeto aplica um fluxo analítico em camadas:
-- carga de CSV/XLSX ou dataset demo
-- limpeza e padronização automática
-- score de qualidade com recomendações práticas
-- visão analítica no Streamlit (KPI, EDA, tendências, concentração)
-- persistência opcional em SQLite com metadados de retenção e privacidade
+## Principais entregas
 
-## Competências demonstradas
-- análise de dados orientada ao negócio
-- SQL + Python para transformação e validação
-- qualidade de dados (`Quality Score`, completude, duplicidade)
-- documentação técnica e rastreabilidade de dados
-- testes automatizados, lint e CI
-- fluxo analítico prático para contexto de BI e analytics engineering inicial/intermediário
+- Upload de CSV e XLSX ou uso de dataset demonstrativo.
+- Limpeza e padronização automática.
+- Quality Score com avaliação de completude e duplicidade.
+- KPIs e análise exploratória no Streamlit.
+- Visualizações de tendência, distribuição e concentração.
+- Persistência opcional em SQLite.
+- Metadados de execução, retenção e privacidade.
+- Testes automatizados, lint e CI.
 
-## Stack técnica
-- `Python`, `Pandas`, `NumPy`
-- `Streamlit`, `Plotly`
-- `SQLite`
-- `Pytest`, `Ruff`, `Black`, `GitHub Actions`
+## Valor demonstrado
 
-## Funcionalidades do dashboard
-- `Overview`: KPI, risco de decisão, confiança e recomendações
-- `Upload`: carga e curadoria automática
-- `Data`: comparação entre base bruta e curada
-- `EDA`: estatísticas, correlação e perfil de ausências
-- `Visualizations`: distribuição, mix e tendência temporal
-- `Database`: catálogo e inspeção de dados persistidos
-- `Settings`: metadados de execução e governança aplicada
+O projeto mostra como estruturar uma rotina de análise que começa pela confiabilidade dos dados antes de chegar ao dashboard, tornando o processo mais rastreável e reduzindo o risco de decisões baseadas em bases inconsistentes.
+
+## Stack
+
+**Dados:** Python, pandas, NumPy, SQL, SQLite  
+**Visualização:** Streamlit, Plotly  
+**Qualidade e engenharia:** pytest, Ruff, Black, GitHub Actions
+
+## Funcionalidades
+
+- **Overview:** KPIs, confiança e recomendações.
+- **Upload:** carga e curadoria automática.
+- **Data:** comparação entre base bruta e curada.
+- **EDA:** estatísticas, correlação e perfil de ausências.
+- **Visualizations:** distribuição, mix e tendência temporal.
+- **Database:** catálogo e inspeção de dados persistidos.
+- **Settings:** metadados e governança aplicada.
+
+## Como revisar este projeto em 5 minutos
+
+1. Abra a [demo online](https://data-analytics-sr.streamlit.app).
+2. Carregue um arquivo ou use o dataset de demonstração.
+3. Compare a base bruta e a curada.
+4. Observe o Quality Score e as recomendações.
+5. Explore KPIs, EDA e persistência no SQLite.
 
 ## Como rodar localmente
+
 ```bash
 git clone https://github.com/samuelmaia-analytics/data-senior-analytics.git
 cd data-senior-analytics
 python -m venv .venv
-
-# Linux/macOS
-source .venv/bin/activate
-
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
-
 pip install -r requirements-dev.txt
 python -m streamlit run dashboard/app.py
 ```
 
-## Como testar
+## Testes
+
 ```bash
 python -m pytest
 ```
 
-## Link da demo
-- https://data-analytics-sr.streamlit.app
+## Limitações e evolução
 
-## Para recrutadores e leads
-Este projeto é útil para avaliação de perfil em oportunidades como:
-- Analista de Dados Júnior / Analista de Dados
-- Analista de BI Júnior / Analista de BI
-- Analytics Engineer inicial/intermediário
-- projetos freelance de dados e trabalhos remotos
+O projeto é uma demonstração local de workflow analítico. Evoluções previstas incluem conectores externos, contratos adicionais e maior observabilidade.
 
-## O que este projeto demonstra
-- capacidade de organizar um problema de negócio em fluxo analítico reproduzível
-- cuidado com qualidade de dados e documentação de apoio
-- comunicação de resultados em dashboard focado em decisão
-- aplicação de boas práticas de governança e privacidade em projeto de portfólio
+## Autor
 
-## Melhorias futuras
-- adicionar novos conectores de dados (APIs e banco externo)
-- incluir mais testes de contrato para cenários de regressão
-- publicar versões de dashboard por caso de uso (vendas, retenção, operações)
-- ampliar automações de qualidade e observabilidade
+Samuel Maia — Analista de Dados | Analytics Engineer
 
-## Licença
-Licenciado sob MIT. Veja [LICENSE](LICENSE).
+- LinkedIn: https://www.linkedin.com/in/samuelmaia-analytics/
+- GitHub: https://github.com/samuelmaia-analytics
+
+[English version](README.en.md)
