@@ -1,5 +1,7 @@
 # Data Analytics Workflow
 
+> **Projeto legado de portfólio.** Este repositório foi preservado como histórico técnico. O portfólio principal atual está concentrado em [Governed Analytics Platform](https://github.com/samuelmaia-analytics/Governed-Analytics-Platform), Central de Automação e Operações e [AWS Serverless Access Counter](https://github.com/samuelmaia-analytics/aws-serverless-access-counter).
+
 Projeto de portfólio para transformar arquivos tabulares em um fluxo analítico prático, com ingestão, limpeza, qualidade, visualização e persistência local.
 
 **Demo:** https://data-analytics-sr.streamlit.app
